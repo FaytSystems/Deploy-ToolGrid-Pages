@@ -1,0 +1,43 @@
+ToolGrid 2500 COLAB Foundation
+================================
+
+Validation run:
+
+  npm run check
+  npm test
+
+Result:
+
+  node --check passed for:
+    - src/main.js
+    - src/project-foundation.js
+    - src/project-megagenerator.js
+    - src/project-demand-ranker.js
+    - src/demand-rankings.js
+    - src/prompt-compiler.js
+    - src/file-translator.js
+    - src/guided-project-orchestrator.js
+    - src/waterfall-scheduler.js
+    - src/project-operating-system.js
+    - src/colab-foundation.js
+    - src/tool-engines.js
+    - scripts/export-demand-rankings.mjs
+    - tests/tool-engines.test.mjs
+
+  npm test passed:
+    All ToolGrid 2500 COLAB foundation tests passed.
+
+Coverage added:
+
+  - COLAB version check
+  - Google Drive provider metadata
+  - Dropbox provider metadata
+  - ToolGrid native sharing metadata
+  - provider setup plan builder
+  - cost summary builder
+  - shared project space creation
+  - invite email validation
+  - invite link creation
+  - invite acceptance into shared space
+  - shared file bundle builder
+  - role-based file sharing permission checks

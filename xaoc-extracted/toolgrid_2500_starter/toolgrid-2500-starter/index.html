@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ToolGrid 2500</title>
+    <meta name="description" content="Search 2,500 free in-browser tools and open them in a multi-panel grid workspace." />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Free Tool Workspace</p>
+        <h1>ToolGrid 2500</h1>
+        <p class="lede">Search a large native tool catalog, open duplicate or different tools, and work in layouts from 1×1 to 4×4.</p>
+      </div>
+      <div class="header-actions">
+        <button id="save-workspace" type="button">Save workspace</button>
+        <button id="restore-workspace" type="button">Restore</button>
+        <button id="clear-workspace" type="button">Clear</button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <aside class="tool-sidebar" aria-label="Tool search and filters">
+        <section class="search-card">
+          <label for="tool-search">Search tools</label>
+          <input id="tool-search" type="search" placeholder="Try: pdf, image, json, password, percent, plant..." autocomplete="off" />
+          <div class="filter-row">
+            <select id="category-filter" aria-label="Category filter"></select>
+            <select id="layout-select" aria-label="Workspace layout"></select>
+          </div>
+          <p id="result-count" class="result-count"></p>
+        </section>
+        <section>
+          <div class="section-title-row">
+            <h2>Tool results</h2>
+            <button id="random-tools" type="button" class="ghost-button">Surprise me</button>
+          </div>
+          <div id="tool-results" class="tool-results" aria-live="polite"></div>
+        </section>
+      </aside>
+
+      <section class="workspace-wrap" aria-label="Workspace">
+        <div class="workspace-toolbar">
+          <div>
+            <h2>Workspace</h2>
+            <p id="workspace-status">Pick a layout and add tools to panels.</p>
+          </div>
+          <div class="panel-picker">
+            <label for="target-panel">Open into panel</label>
+            <select id="target-panel"></select>
+          </div>
+        </div>
+        <div id="workspace-grid" class="workspace-grid"></div>
+      </section>
+    </main>
+
+    <template id="empty-panel-template">
+      <div class="empty-panel">
+        <strong>Empty panel</strong>
+        <span>Search a tool and click “Open”.</span>
+      </div>
+    </template>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

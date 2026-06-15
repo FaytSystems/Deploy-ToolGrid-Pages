@@ -1,0 +1,25 @@
+{
+  "name": "toolgrid-2500-file-upload-translator-foundation",
+  "version": "1.7.0",
+  "description": "Searchable multi-window tool workspace with prompt compilation, document upload file translation, suggested tool selection, demand-ranked 500,000,000 project blueprints, 2,500 native tools, and AI/manual waterfall workflows.",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/tool-engines.test.mjs",
+    "start": "node --watch dev-server.mjs",
+    "generate:projects": "node scripts/generate-project-ideas.mjs",
+    "rank:demand": "node scripts/export-demand-rankings.mjs",
+    "check": "node --check src/main.js && node --check src/project-foundation.js && node --check src/project-megagenerator.js && node --check src/project-demand-ranker.js && node --check src/demand-rankings.js && node --check src/prompt-compiler.js && node --check src/file-translator.js && node --check src/tool-engines.js && node --check scripts/export-demand-rankings.mjs && node --check tests/tool-engines.test.mjs"
+  },
+  "keywords": [
+    "tools",
+    "dashboard",
+    "search",
+    "workspace",
+    "javascript",
+    "project-generator",
+    "workflow",
+    "waterfall"
+  ],
+  "license": "MIT",
+  "devDependencies": {}
+}

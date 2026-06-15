@@ -1,0 +1,37 @@
+ToolGrid 2500 Project Idea Foundation test results
+==================================================
+
+Commands run:
+
+node --check src/main.js
+node --check src/project-foundation.js
+node --check src/tool-engines.js
+node --check src/project-templates.js
+node scripts/generate-project-ideas.mjs
+npm test
+
+Result:
+
+Generated 10000 project templates, 125 groups, version 2026-06-13-10000-project-ideas-v1.
+All ToolGrid 2500 project idea foundation tests passed.
+
+Validated:
+
+- 2,500 tool records exist.
+- 10,000 project templates exist.
+- 125 reusable tool groups exist.
+- 80 fields are represented.
+- Template complexity counts:
+  - micro-2-4: 2,666
+  - mid-8: 2,667
+  - standard-16: 2,667
+  - advanced-32: 1,000
+  - nested-64: 1,000
+- Every project template references real tool IDs from the 2,500-tool catalog.
+- Template panel tool counts match declared template tool counts.
+- The template library contains more than 100,000 cross-referenced tool placements.
+- Nested 64-tool templates produce 16 outer panels with 4 tool nodes per panel.
+- Project-bus simultaneous workflows run.
+- Project-bus queued waterfall workflows run.
+- Project-bus nested waterfall workflows run.
+- AI prompt mode can load matching templates from the 10,000 idea library.

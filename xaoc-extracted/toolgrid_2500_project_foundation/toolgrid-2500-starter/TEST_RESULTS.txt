@@ -1,0 +1,27 @@
+ToolGrid 2500 Project Foundation Test Results
+=============================================
+
+Command:
+  npm test
+
+Result:
+  PASS
+
+Console output:
+  > toolgrid-2500-starter@1.1.0 test
+  > node tests/tool-engines.test.mjs
+
+  All ToolGrid 2500 project foundation tests passed.
+
+Validated:
+  - Catalog version: 2026-06-13-native-2500-v1
+  - Project foundation version: 2026-06-13-project-foundation-v1
+  - Exact catalog size: 2,500 tool records
+  - Category totals match expected distribution
+  - Every tool has a unique id, name, category, tags array, known engine, schema, and runnable default output
+  - Every tool exposes project input/output metadata
+  - Compatible project links are detected between panel nodes
+  - Project artifacts and events can be created
+  - Simultaneous project workflows run only panels assigned to the active project
+  - Queued waterfall workflows pass output from one compatible tool into the next
+  - Engine-specific assertions passed for text, developer, JSON, CSV, unit conversion, calculators, date/time, random generators, color, SEO, gardening, cooking, and business utilities

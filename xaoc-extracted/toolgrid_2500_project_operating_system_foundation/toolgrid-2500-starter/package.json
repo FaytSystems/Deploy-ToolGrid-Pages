@@ -1,0 +1,33 @@
+{
+  "name": "toolgrid-2500-project-operating-system-foundation",
+  "version": "2.0.0",
+  "description": "Searchable multi-window AI project operating system with 2,500 tools, prompt/file translation, paid/free tool selector, dependency-aware waterfall multitask scheduling, tool genome, industry packs, approval checkpoints, repair memory, artifact history, workflow recorder, theme/sound personalization, and analytics-based ranking.",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/tool-engines.test.mjs",
+    "start": "node --watch dev-server.mjs",
+    "generate:projects": "node scripts/generate-project-ideas.mjs",
+    "rank:demand": "node scripts/export-demand-rankings.mjs",
+    "check": "node --check src/main.js && node --check src/project-foundation.js && node --check src/project-megagenerator.js && node --check src/project-demand-ranker.js && node --check src/demand-rankings.js && node --check src/prompt-compiler.js && node --check src/file-translator.js && node --check src/guided-project-orchestrator.js && node --check src/waterfall-scheduler.js && node --check src/project-operating-system.js && node --check src/tool-engines.js && node --check scripts/export-demand-rankings.mjs && node --check tests/tool-engines.test.mjs"
+  },
+  "keywords": [
+    "tools",
+    "dashboard",
+    "search",
+    "workspace",
+    "javascript",
+    "project-generator",
+    "workflow",
+    "waterfall",
+    "multitask",
+    "scheduler",
+    "project-os",
+    "tool-genome",
+    "artifact-history",
+    "approval-checkpoints",
+    "workflow-recorder",
+    "analytics-loop"
+  ],
+  "license": "MIT",
+  "devDependencies": {}
+}

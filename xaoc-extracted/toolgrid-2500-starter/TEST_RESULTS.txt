@@ -1,0 +1,38 @@
+ToolGrid 2500 Demand-Ranked Project Foundation
+Generated: 2026-06-13
+
+Commands run:
+
+1. node scripts/export-demand-rankings.mjs
+   Result:
+   - Wrote src/demand-rankings.js
+   - Ranked 2,500 tools from most-used to least-used
+   - Generated top 250 demand-ranked project samples
+   - Sampled 2,275,000 virtual project coordinates for weighted usage projection
+
+2. npm run check
+   Result:
+   - node --check src/main.js passed
+   - node --check src/project-foundation.js passed
+   - node --check src/project-megagenerator.js passed
+   - node --check src/project-demand-ranker.js passed
+   - node --check src/demand-rankings.js passed
+   - node --check src/prompt-compiler.js passed
+   - node --check src/tool-engines.js passed
+   - node --check scripts/export-demand-rankings.mjs passed
+   - node --check tests/tool-engines.test.mjs passed
+
+3. npm test
+   Result:
+   - All ToolGrid 2500 demand-ranked project foundation tests passed.
+
+Validated features:
+
+- 2,500 native tool records exist and run smoke tests.
+- 10,000 curated templates exist and cross-reference real tools.
+- 500,000,000 deterministic virtual project blueprints remain addressable.
+- Demand ranker scores likely-needed projects without exporting 500,000,000 rows.
+- Demand rankings include top project samples and category summaries.
+- Tool usage export ranks all 2,500 tools from most-used to least-used.
+- Prompt compiler still handles the mushroom farm example and generalized search terms.
+- AI/manual project bus, simultaneous runs, queued waterfalls, and nested 64-UI plans still pass tests.

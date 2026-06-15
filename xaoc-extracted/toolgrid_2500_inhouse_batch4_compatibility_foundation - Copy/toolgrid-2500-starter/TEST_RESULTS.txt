@@ -1,0 +1,77 @@
+ToolGrid 2500 In-House Tool Compatibility Foundation Batch 4
+=============================================================
+
+Validation run:
+
+  npm run check
+  npm test
+  npm run compat:inhouse
+
+Result:
+
+  node --check passed for:
+    - src/main.js
+    - src/project-foundation.js
+    - src/project-megagenerator.js
+    - src/project-demand-ranker.js
+    - src/demand-rankings.js
+    - src/prompt-compiler.js
+    - src/file-translator.js
+    - src/guided-project-orchestrator.js
+    - src/waterfall-scheduler.js
+    - src/project-operating-system.js
+    - src/colab-foundation.js
+    - src/in-house-tools.js
+    - src/tool-engines.js
+    - scripts/export-demand-rankings.mjs
+    - scripts/export-inhouse-tool-compatibility.mjs
+    - tests/tool-engines.test.mjs
+
+  npm test passed:
+    All ToolGrid 2500 in-house batch-four compatibility foundation tests passed.
+
+  npm run compat:inhouse passed:
+    320 in-house tools
+    77,527 compatibility links
+    77,527 parallel-safe links
+    43,308 approval-sensitive links
+
+Coverage added:
+
+  - In-house tool suite version check
+  - 320 in-house tool records
+  - 80 new batch-four in-house tools
+  - dense tags per in-house tool
+  - rich search phrases per in-house tool
+  - known engine validation
+  - input/output contract validation
+  - expanded contract alias compatibility
+  - compatibility matrix generation
+  - parallel-safe link detection
+  - approval-sensitive link detection
+  - prompt-based in-house tool search
+  - mushroom workflow in-house tool matching
+  - waterfall task signal generation
+  - paid multitask-ready task detection
+  - export script for compatibility summary
+  - export script for compatibility links CSV
+  - export script for search tags CSV
+
+Batch 4 categories added:
+
+  - In-House Construction & Contractor
+  - In-House Automotive
+  - In-House Beauty & Salon
+  - In-House Pet Care
+  - In-House Retail & Local Shop
+  - In-House Photography Studio
+  - In-House Podcast Production
+  - In-House SaaS Support
+  - In-House Bookkeeping & Tax Admin
+  - In-House Manufacturing & Warehouse
+
+Export files generated:
+
+  - exports/inhouse-tool-compatibility-summary.json
+  - exports/inhouse-tool-compatibility-links.csv
+  - exports/inhouse-tool-search-tags.csv

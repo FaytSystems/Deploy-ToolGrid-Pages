@@ -1,0 +1,19 @@
+{
+  "name": "toolgrid-2500-starter",
+  "version": "1.0.0",
+  "description": "Searchable multi-window tool workspace with 2,500 generated tool records and tested in-browser tool engines.",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/tool-engines.test.mjs",
+    "start": "node --watch dev-server.mjs"
+  },
+  "keywords": [
+    "tools",
+    "dashboard",
+    "search",
+    "workspace",
+    "javascript"
+  ],
+  "license": "MIT",
+  "devDependencies": {}
+}

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ToolGrid 2500 Project Foundation</title>
+    <meta name="description" content="Search 2,500 free in-browser tools, assign them to projects, and run multi-panel simultaneous or queued workflows." />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Project-Aware Free Tool Workspace</p>
+        <h1>ToolGrid 2500</h1>
+        <p class="lede">Search a large native tool catalog, open tools into 1×1 through 4×4 panels, assign every panel to a project, and let compatible tools share artifacts through a project bus.</p>
+      </div>
+      <div class="header-actions">
+        <button id="save-workspace" type="button">Save workspace</button>
+        <button id="restore-workspace" type="button">Restore</button>
+        <button id="clear-workspace" type="button">Clear panels</button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <aside class="tool-sidebar" aria-label="Project foundation, tool search, and filters">
+        <section class="project-card" aria-label="Project foundation">
+          <p class="eyebrow small">Project foundation</p>
+          <label for="container-name">Main container</label>
+          <input id="container-name" type="text" autocomplete="off" />
+
+          <div class="form-grid two compact-grid">
+            <div>
+              <label for="project-select">Active project</label>
+              <select id="project-select"></select>
+            </div>
+            <div class="button-stack">
+              <button id="create-project" type="button">New project</button>
+            </div>
+          </div>
+
+          <label for="project-name">Project name</label>
+          <div class="inline-edit-row">
+            <input id="project-name" type="text" autocomplete="off" />
+            <button id="rename-project" type="button">Rename</button>
+          </div>
+
+          <label for="project-input">Project input / shared payload</label>
+          <textarea id="project-input" rows="5" placeholder="Paste the shared project payload here. Tools can consume this directly, simultaneously, or as the first step in a waterfall queue."></textarea>
+
+          <div class="project-actions">
+            <button id="run-project-simultaneous" type="button">Run simultaneous</button>
+            <button id="run-project-queue" type="button">Run queued waterfall</button>
+            <button id="clear-project-data" type="button" class="ghost-button">Clear project log</button>
+          </div>
+
+          <details open>
+            <summary>Compatible panel links</summary>
+            <ul id="project-links" class="project-list"></ul>
+          </details>
+
+          <details>
+            <summary>Project artifacts</summary>
+            <ul id="project-artifacts" class="project-list artifact-list"></ul>
+          </details>
+
+          <details>
+            <summary>Project events</summary>
+            <ul id="project-events" class="project-list"></ul>
+          </details>
+        </section>
+
+        <section class="search-card">
+          <label for="tool-search">Search tools</label>
+          <input id="tool-search" type="search" placeholder="Try: pdf, image, json, password, percent, plant..." autocomplete="off" />
+          <div class="filter-row">
+            <select id="category-filter" aria-label="Category filter"></select>
+            <select id="layout-select" aria-label="Workspace layout"></select>
+          </div>
+          <p id="result-count" class="result-count"></p>
+        </section>
+
+        <section>
+          <div class="section-title-row">
+            <h2>Tool results</h2>
+            <button id="random-tools" type="button" class="ghost-button">Surprise me</button>
+          </div>
+          <div id="tool-results" class="tool-results" aria-live="polite"></div>
+        </section>
+      </aside>
+
+      <section class="workspace-wrap" aria-label="Workspace">
+        <div class="workspace-toolbar">
+          <div>
+            <h2>Workspace</h2>
+            <p id="workspace-status">Pick a project, choose a layout, and add tools to panels.</p>
+          </div>
+          <div class="panel-picker">
+            <label for="target-panel">Open into panel</label>
+            <select id="target-panel"></select>
+          </div>
+        </div>
+        <div id="workspace-grid" class="workspace-grid"></div>
+      </section>
+    </main>
+
+    <template id="empty-panel-template">
+      <div class="empty-panel">
+        <strong>Empty panel</strong>
+        <span>Search a tool and click “Open”.</span>
+      </div>
+    </template>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

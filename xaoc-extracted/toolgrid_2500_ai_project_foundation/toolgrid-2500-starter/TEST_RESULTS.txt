@@ -1,0 +1,23 @@
+ToolGrid 2500 AI Project Foundation test run
+Date: 2026-06-13
+Command: npm test
+Result: PASS
+
+Validated:
+- Catalog contains exactly 2,500 tool records.
+- Category counts are stable.
+- Every tool has a unique id, name, category, tags array, known engine, valid schema, project IO, and non-empty string output.
+- Core native engines passed sample assertions.
+- Tool compatibility detection passed for text and CSV/JSON workflows.
+- Project state creation includes AI/manual mode defaults and manual auto-waterfall defaults.
+- Project input injection into compatible tool schemas passed.
+- Compatible project panel links are detected.
+- Simultaneous project workflow runs only panels assigned to the active project.
+- Queued waterfall workflow passes output from one compatible tool to the next.
+- Manual downstream waterfall can continue from a published panel.
+- AI project generator creates a prompt-based compatible plan.
+- AI project plan can be converted into panel entries.
+- Artifact publishing appends artifacts and events.
+
+Console output:
+All ToolGrid 2500 AI project foundation tests passed.

@@ -1,0 +1,24 @@
+{
+  "name": "toolgrid-2500-prompt-compiler-foundation",
+  "version": "1.5.0",
+  "description": "Searchable multi-window tool workspace with prompt compilation, 2,500 native tools, 10,000 curated templates, and 500,000,000 deterministic project blueprints from 1 UI to 64 UI nodes.",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/tool-engines.test.mjs",
+    "start": "node --watch dev-server.mjs",
+    "generate:projects": "node scripts/generate-project-ideas.mjs",
+    "check": "node --check src/main.js && node --check src/project-foundation.js && node --check src/project-megagenerator.js && node --check src/prompt-compiler.js && node --check src/tool-engines.js && node --check tests/tool-engines.test.mjs"
+  },
+  "keywords": [
+    "tools",
+    "dashboard",
+    "search",
+    "workspace",
+    "javascript",
+    "project-generator",
+    "workflow",
+    "waterfall"
+  ],
+  "license": "MIT",
+  "devDependencies": {}
+}

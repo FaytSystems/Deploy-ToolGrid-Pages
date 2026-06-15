@@ -1,0 +1,62 @@
+ToolGrid 2500 In-House Tool Compatibility Foundation
+====================================================
+
+Validation run:
+
+  npm run check
+  npm test
+  npm run compat:inhouse
+
+Result:
+
+  node --check passed for:
+    - src/main.js
+    - src/project-foundation.js
+    - src/project-megagenerator.js
+    - src/project-demand-ranker.js
+    - src/demand-rankings.js
+    - src/prompt-compiler.js
+    - src/file-translator.js
+    - src/guided-project-orchestrator.js
+    - src/waterfall-scheduler.js
+    - src/project-operating-system.js
+    - src/colab-foundation.js
+    - src/in-house-tools.js
+    - src/tool-engines.js
+    - scripts/export-demand-rankings.mjs
+    - scripts/export-inhouse-tool-compatibility.mjs
+    - tests/tool-engines.test.mjs
+
+  npm test passed:
+    All ToolGrid 2500 in-house compatibility foundation tests passed.
+
+  npm run compat:inhouse passed:
+    80 in-house tools
+    4,379 compatibility links
+    4,379 parallel-safe links
+    1,290 approval-sensitive links
+
+Coverage added:
+
+  - In-house tool suite version check
+  - 80 in-house tool records
+  - dense tags per in-house tool
+  - rich search phrases per in-house tool
+  - known engine validation
+  - input/output contract validation
+  - compatibility matrix generation
+  - parallel-safe link detection
+  - approval-sensitive link detection
+  - prompt-based in-house tool search
+  - mushroom workflow in-house tool matching
+  - waterfall task signal generation
+  - paid multitask-ready task detection
+  - export script for compatibility summary
+  - export script for compatibility links CSV
+  - export script for search tags CSV
+
+Export files generated:
+
+  - exports/inhouse-tool-compatibility-summary.json
+  - exports/inhouse-tool-compatibility-links.csv
+  - exports/inhouse-tool-search-tags.csv

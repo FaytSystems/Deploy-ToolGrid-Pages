@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ToolGrid 2500 Project OS + Theme Studio + Skeleton Tools</title>
+    <meta name="description" content="Search 2,500 native tools, compile prompts into generalized search terms and compatible tool graphs, load 500,010,000 project possibilities, and run dependency-aware waterfalls with paid multitask scheduling, progress/ETA meters, and 1 UI to 64 nested UIs." />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Project Operating System + Dependency-Aware Tool Graph</p>
+        <h1>ToolGrid 2500</h1>
+        <p class="lede">Enter a prompt, upload files, choose free manual selection or paid based-on-project selection, then let the project operating system build a tool genome graph, ask only needed questions, run safe waterfalls, show progress/ETA countdowns, record artifacts, learn from repairs, and share project files through COLAB.</p>
+      </div>
+      <div class="header-actions">
+        <button id="open-tool-selector" type="button">Open tool selector</button>
+        <button id="open-colab" type="button">COLAB</button>
+        <button id="save-workspace" type="button">Save workspace</button>
+        <button id="restore-workspace" type="button">Restore</button>
+        <button id="clear-workspace" type="button">Clear panels</button>
+      </div>
+    </header>
+
+    <nav class="main-menu-tabs" aria-label="Main menu">
+      <button id="main-tab-workspace" type="button" class="main-menu-tab active">WORKSPACE</button>
+      <button id="main-tab-colab" type="button" class="main-menu-tab">COLAB</button>
+    </nav>
+
+    <main id="workspace-view" class="app-shell">
+      <aside class="tool-sidebar" aria-label="AI project generator, project foundation, tool search, and filters">
+        <section class="project-card" aria-label="AI project foundation">
+          <p class="eyebrow small">Project foundation</p>
+          <label for="container-name">Main container</label>
+          <input id="container-name" type="text" autocomplete="off" />
+
+          <div class="form-grid two compact-grid">
+            <div>
+              <label for="workspace-mode">Mode</label>
+              <select id="workspace-mode"></select>
+            </div>
+            <div class="switch-cell">
+              <label for="auto-waterfall">Manual auto-waterfall</label>
+              <label class="toggle-row">
+                <input id="auto-waterfall" type="checkbox" checked />
+                <span>On publish, run compatible downstream tools</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-grid two compact-grid subscription-grid">
+            <div>
+              <label for="subscription-status">Selector access</label>
+              <select id="subscription-status">
+                <option value="free">Free — Choose Own</option>
+                <option value="paid">Paid — Based on Project</option>
+              </select>
+            </div>
+            <div>
+              <label for="selector-tab-hint">Tool selector</label>
+              <button id="open-tool-selector-inline" type="button">Choose tools</button>
+            </div>
+          </div>
+
+          <div class="form-grid two compact-grid">
+            <div>
+              <label for="project-select">Active project</label>
+              <select id="project-select"></select>
+            </div>
+            <div class="button-stack">
+              <button id="create-project" type="button">New project</button>
+            </div>
+          </div>
+
+          <label for="project-name">Project name</label>
+          <div class="inline-edit-row">
+            <input id="project-name" type="text" autocomplete="off" />
+            <button id="rename-project" type="button">Rename</button>
+          </div>
+
+          <section class="ai-mode-card" aria-label="AI mode project generator">
+            <p class="eyebrow small">AI mode</p>
+            <label for="ai-prompt">Step 1 — Tell the project generator what to accomplish</label>
+            <textarea id="ai-prompt" rows="4" placeholder="Example: Build a workflow that helps a mushroom farm calculate substrate recipes, track contamination reports, generate batch labels, write customer emails, and create a weekly harvest forecast."></textarea>
+
+            <section class="file-upload-card" aria-label="Document upload and file translator">
+              <p class="eyebrow small">Document upload translator</p>
+              <label for="file-upload">Step 2 — Upload files for this project</label>
+              <input id="file-upload" type="file" multiple />
+              <p id="file-translator-status" class="result-count">Step 1: enter prompt · Step 2: upload files · Step 3: confirm all files added · Step 4: select tools</p>
+              <div class="project-actions">
+                <button id="use-file-suggested-tools" type="button">Use suggested tools</button>
+                <button id="clear-uploaded-files" type="button" class="ghost-button">Clear uploaded files</button>
+              </div>
+              <div id="file-suggestion-results" class="file-suggestion-results" aria-live="polite"></div>
+            </section>
+
+            <div class="project-actions">
+              <button id="generate-ai-project" type="button">Generate project</button>
+              <button id="animate-ai-project" type="button">Animate + run</button>
+            </div>
+            <details open>
+              <summary>Prompt breakdown / generalized search terms</summary>
+              <ul id="ai-breakdown" class="project-list ai-plan-list"></ul>
+            </details>
+
+            <details open>
+              <summary>AI project plan</summary>
+              <ul id="ai-plan" class="project-list ai-plan-list"></ul>
+            </details>
+          </section>
+
+          <section class="template-mode-card" aria-label="Project idea library">
+            <p class="eyebrow small">Project idea library</p>
+            <label for="project-template-search">Search 500,010,000 project ideas</label>
+            <input id="project-template-search" type="search" placeholder="Try: restaurant SEO, ecommerce pricing, developer security, garden content, 64 UI research lab..." autocomplete="off" />
+            <label for="project-template-complexity">Project size</label>
+            <select id="project-template-complexity"></select>
+            <p id="project-template-stats" class="result-count"></p>
+            <div id="project-template-results" class="template-results" aria-live="polite"></div>
+          </section>
+
+
+
+          <section class="demand-mode-card" aria-label="Demand-ranked project and tool usage intelligence">
+            <p class="eyebrow small">Demand rankings</p>
+            <p id="demand-ranking-stats" class="result-count"></p>
+            <details open>
+              <summary>Most likely needed project types</summary>
+              <ol id="top-demand-projects" class="project-list ranked-list"></ol>
+            </details>
+            <details open>
+              <summary>Projected tool usage by category</summary>
+              <ol id="category-demand-ranking" class="project-list ranked-list"></ol>
+            </details>
+            <details>
+              <summary>Top tools: most used to least used</summary>
+              <ol id="tool-demand-ranking" class="project-list ranked-list"></ol>
+            </details>
+          </section>
+
+
+
+          <section class="project-os-card" aria-label="Project operating system upgrades">
+            <p class="eyebrow small">Project OS foundation</p>
+            <div id="project-os-stats" class="project-os-stats" aria-live="polite"></div>
+            <details open>
+              <summary>10 upgrades now active</summary>
+              <ol id="project-os-upgrades" class="project-list os-upgrade-list"></ol>
+            </details>
+            <details>
+              <summary>Tool genome preview</summary>
+              <ul id="tool-genome-preview" class="project-list os-preview-list"></ul>
+            </details>
+            <details open>
+              <summary>Dependency graph / ask-only-needed status</summary>
+              <p id="project-graph-preview" class="mini-note"></p>
+            </details>
+            <details open>
+              <summary>Industry project packs</summary>
+              <ul id="industry-packs-preview" class="project-list os-preview-list"></ul>
+            </details>
+            <details>
+              <summary>Human approval checkpoints</summary>
+              <ul id="approval-checkpoints-preview" class="project-list os-preview-list"></ul>
+            </details>
+            <details open>
+              <summary>Workflow recorder + artifact history</summary>
+              <p id="workflow-recorder-preview" class="mini-note"></p>
+            </details>
+            <details>
+              <summary>Analytics learning loop</summary>
+              <p id="analytics-loop-preview" class="mini-note"></p>
+            </details>
+          </section>
+
+          <section class="inhouse-tools-card" aria-label="In-house tool build and compatibility generator">
+            <p class="eyebrow small">In-house tools</p>
+            <h2>Native tool build lab</h2>
+            <p class="mini-note">Purpose-built ToolGrid tools are tagged, contract-mapped, and passed through the compatibility generator before they are suggested together in a waterfall.</p>
+            <div id="inhouse-tool-stats" class="project-os-stats" aria-live="polite"></div>
+            <details open>
+              <summary>Best in-house tools for this prompt</summary>
+              <ul id="inhouse-workflow-preview" class="project-list os-preview-list"></ul>
+            </details>
+            <details>
+              <summary>Compatibility generator sample links</summary>
+              <ul id="inhouse-compatibility-preview" class="project-list os-preview-list"></ul>
+            </details>
+            <details>
+              <summary>Search tags / obvious-use names</summary>
+              <ul id="inhouse-search-tags-preview" class="project-list os-preview-list"></ul>
+            </details>
+            <details open>
+              <summary>Waterfall queue signals</summary>
+              <ul id="inhouse-signal-preview" class="project-list os-preview-list"></ul>
+            </details>
+          </section>
+
+          <section class="webcam-tools-card" aria-label="PG live webcam explorer">
+            <p class="eyebrow small">PG live webcam tool</p>
+            <h2>Live Webcam Explorer</h2>
+            <p class="mini-note">Search family-safe nature, city, beach, park, animal, and scenic webcam sources. Streams appear inside ToolGrid only when the provider allows embedding; otherwise the card opens the official source page.</p>
+            <div id="webcam-tool-stats" class="project-os-stats" aria-live="polite"></div>
+            <div class="form-grid two compact-grid">
+              <div>
+                <label for="webcam-search">Cam search</label>
+                <input id="webcam-search" type="search" value="nature beach city scenic" placeholder="beach, forest, desert, rainforest, skyline, birds..." />
+              </div>
+              <div>
+                <label for="webcam-count">Outputs to show</label>
+                <input id="webcam-count" type="number" min="1" max="64" value="16" />
+              </div>
+              <div>
+                <label for="webcam-provider">Provider</label>
+                <select id="webcam-provider"></select>
+              </div>
+              <div>
+                <label for="webcam-category">Category</label>
+                <select id="webcam-category"></select>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button id="webcam-open-tool" type="button">Open webcam tool</button>
+              <button id="webcam-load-wall" type="button" class="ghost-button">Fill workspace with webcam UI</button>
+            </div>
+            <div id="webcam-results" class="webcam-mini-results" aria-live="polite"></div>
+          </section>
+
+
+          <section class="factchecker-tools-card" aria-label="FactChecker quote and phrase finder">
+            <p class="eyebrow small">FactChecker tool skeleton</p>
+            <h2>FactChecker Quote &amp; Phrase Finder</h2>
+            <p class="mini-note">Input a quote, phrase, person, date range, source whitelist/blocklist, or public social target. The tool prepares a 1–64 cell clipping grid that is ready for credible source excerpts once a live search/news/social backend is connected.</p>
+            <div id="factchecker-tool-stats" class="project-os-stats" aria-live="polite"></div>
+            <div class="form-grid two compact-grid">
+              <div>
+                <label for="factchecker-mode">Search mode</label>
+                <select id="factchecker-mode">
+                  <option value="quote-verification">Quote verification</option>
+                  <option value="phrase-finder">Phrase finder</option>
+                  <option value="site-phrase-count">Site phrase count</option>
+                  <option value="social-keyword-scan">Social keyword scan</option>
+                </select>
+              </div>
+              <div>
+                <label for="factchecker-count">Cells to prepare</label>
+                <input id="factchecker-count" type="number" min="1" max="64" value="16" />
+              </div>
+              <div>
+                <label for="factchecker-person">Person / speaker</label>
+                <input id="factchecker-person" type="text" value="Martin Luther King Jr." placeholder="Person X" />
+              </div>
+              <div>
+                <label for="factchecker-date-from">From date</label>
+                <input id="factchecker-date-from" type="date" />
+              </div>
+              <div>
+                <label for="factchecker-date-to">To date</label>
+                <input id="factchecker-date-to" type="date" />
+              </div>
+              <div>
+                <label for="factchecker-phrase">Quoted phrase / keyword</label>
+                <textarea id="factchecker-phrase" rows="3" placeholder="Paste the quote or phrase to locate...">I have a dream</textarea>
+              </div>
+              <div>
+                <label for="factchecker-include-sites">Only these sites/domains</label>
+                <textarea id="factchecker-include-sites" rows="3" placeholder="reuters.com&#10;apnews.com&#10;c-span.org"></textarea>
+              </div>
+              <div>
+                <label for="factchecker-exclude-sites">Never use these sites/domains</label>
+                <textarea id="factchecker-exclude-sites" rows="3" placeholder="example.com"></textarea>
+              </div>
+              <div>
+                <label for="factchecker-social-targets">Public social page URLs / handles</label>
+                <textarea id="factchecker-social-targets" rows="3" placeholder="Official public pages only"></textarea>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button id="factchecker-open-tool" type="button">Open FactChecker tool</button>
+              <button id="factchecker-load-grid" type="button" class="ghost-button">Fill workspace with clipping cells</button>
+            </div>
+            <div id="factchecker-results" class="factchecker-mini-results" aria-live="polite"></div>
+          </section>
+
+
+          <section class="premium-theme-studio-card" aria-label="Paid profile theme studio and RGB effects generator">
+            <p class="eyebrow small">Paid profile theme maker</p>
+            <h2>Theme Studio + RGB Generator</h2>
+            <p class="mini-note">Turn the uploaded sci-fi dashboard look into functional paid profile settings: choose premade templates, customize background/box/cell/active-cell colors, pick RGB effects, randomize, alternate colors between logons, or generate a new theme each sign-in.</p>
+            <div id="paid-theme-studio-stats" class="project-os-stats" aria-live="polite"></div>
+            <div class="form-grid two compact-grid">
+              <div>
+                <label for="paid-theme-preset">Premade template</label>
+                <select id="paid-theme-preset"></select>
+              </div>
+              <div>
+                <label for="paid-theme-effect">RGB effect</label>
+                <select id="paid-theme-effect"></select>
+              </div>
+              <div>
+                <label for="paid-theme-background">Background</label>
+                <input id="paid-theme-background" type="color" value="#050A14" />
+              </div>
+              <div>
+                <label for="paid-theme-box">Box color</label>
+                <input id="paid-theme-box" type="color" value="#101827" />
+              </div>
+              <div>
+                <label for="paid-theme-cell">Cell color</label>
+                <input id="paid-theme-cell" type="color" value="#13233A" />
+              </div>
+              <div>
+                <label for="paid-theme-active-cell">Active cell</label>
+                <input id="paid-theme-active-cell" type="color" value="#00E5FF" />
+              </div>
+              <div>
+                <label for="paid-theme-glow">Glow / RGB color</label>
+                <input id="paid-theme-glow" type="color" value="#7C3CFF" />
+              </div>
+              <div>
+                <label for="paid-theme-speed">Effect speed</label>
+                <input id="paid-theme-speed" type="range" min="0.4" max="8" step="0.1" value="3.2" />
+              </div>
+            </div>
+            <div class="theme-switch-row">
+              <label class="toggle-row"><input id="paid-theme-random-signin" type="checkbox" /> <span>Randomize new theme each sign-in</span></label>
+              <label class="toggle-row"><input id="paid-theme-alternate-logons" type="checkbox" checked /> <span>Alternate colors within same theme family between logons</span></label>
+            </div>
+            <div id="paid-theme-preview" class="paid-theme-preview" aria-live="polite"></div>
+            <div class="project-actions">
+              <button id="paid-theme-randomize" type="button">Randomize theme</button>
+              <button id="paid-theme-save" type="button">Save to paid profile</button>
+              <button id="paid-theme-open-tool" type="button" class="ghost-button">Open Theme Studio tool</button>
+              <button id="paid-theme-open-rgb" type="button" class="ghost-button">Open RGB Generator</button>
+            </div>
+          </section>
+
+          <section class="rgb-motion-studio-card" aria-label="Paid RGB image and video motion studio">
+            <p class="eyebrow small">Paid image/video RGB effects</p>
+            <h2>RGB Motion Shape FX Studio</h2>
+            <p class="mini-note">Build animated RGB overlays for images and videos. Use premade shapes or custom paths, then apply separate effects to outlines, fills, inner outlines, and glow layers. The Dog-Chasing-Tail effect is a light ball with a faded tail running around the chosen path.</p>
+            <div id="rgb-motion-stats" class="project-os-stats" aria-live="polite"></div>
+            <div class="form-grid two compact-grid">
+              <div>
+                <label for="rgb-motion-shape">Shape / path</label>
+                <select id="rgb-motion-shape"></select>
+              </div>
+              <div>
+                <label for="rgb-motion-outline-effect">Outline effect</label>
+                <select id="rgb-motion-outline-effect"></select>
+              </div>
+              <div>
+                <label for="rgb-motion-fill-effect">Fill effect</label>
+                <select id="rgb-motion-fill-effect"></select>
+              </div>
+              <div>
+                <label for="rgb-motion-layer-count">Effect layers</label>
+                <input id="rgb-motion-layer-count" type="number" min="1" max="64" value="4" />
+              </div>
+              <div>
+                <label for="rgb-motion-outline-color">Outline color</label>
+                <input id="rgb-motion-outline-color" type="color" value="#00E5FF" />
+              </div>
+              <div>
+                <label for="rgb-motion-fill-color">Fill color</label>
+                <input id="rgb-motion-fill-color" type="color" value="#7C00FF" />
+              </div>
+              <div>
+                <label for="rgb-motion-secondary-color">Secondary color</label>
+                <input id="rgb-motion-secondary-color" type="color" value="#FFB000" />
+              </div>
+              <div>
+                <label for="rgb-motion-speed">Motion speed</label>
+                <input id="rgb-motion-speed" type="range" min="0.3" max="12" step="0.1" value="3.2" />
+              </div>
+            </div>
+            <div id="rgb-motion-preview" class="rgb-motion-preview-panel" aria-live="polite"></div>
+            <div class="project-actions">
+              <button id="rgb-motion-randomize" type="button">Randomize RGB FX</button>
+              <button id="rgb-motion-open-tool" type="button" class="ghost-button">Open RGB Motion Studio</button>
+              <button id="rgb-motion-fill-workspace" type="button" class="ghost-button">Fill workspace with FX layers</button>
+            </div>
+            <div id="rgb-motion-results" class="rgb-motion-mini-results" aria-live="polite"></div>
+          </section>
+
+
+          <section class="skeleton-tools-card" aria-label="Generic skeleton tools and prompt engine routing">
+            <p class="eyebrow small">Generic skeleton tools</p>
+            <h2>Skeleton tool layer</h2>
+            <p class="mini-note">Specific tools remain untouched. A second system-labeled skeleton version is generated for every usable tool so the prompt engine can choose either a specific tool or a reusable generic pattern.</p>
+            <div id="skeleton-tool-stats" class="project-os-stats" aria-live="polite"></div>
+            <div class="form-grid two compact-grid">
+              <div>
+                <label for="skeleton-search">Skeleton search</label>
+                <input id="skeleton-search" type="search" value="generic reusable workflow skeleton" placeholder="generic quote finder, data cleaner skeleton, theme generator skeleton..." />
+              </div>
+              <div>
+                <label for="skeleton-limit">Suggestions</label>
+                <input id="skeleton-limit" type="number" min="1" max="64" value="16" />
+              </div>
+            </div>
+            <div class="project-actions">
+              <button id="skeleton-load-grid" type="button">Load skeleton suggestions into workspace</button>
+            </div>
+            <div id="skeleton-results" class="skeleton-mini-results" aria-live="polite"></div>
+          </section>
+
+          <section class="theme-sound-card" aria-label="User profile theme and sound settings">
+            <p class="eyebrow small">Profile theme + sound</p>
+            <label for="profile-topics">Topics / categories / subjects enjoyed</label>
+            <textarea id="profile-topics" rows="3" placeholder="Example: gardening, mushrooms, cozy games, productivity, science fiction, business growth"></textarea>
+            <div class="project-actions">
+              <button id="save-profile-theme" type="button">Save profile + generate session theme</button>
+              <button id="preview-sound" type="button" class="ghost-button">Preview sound</button>
+            </div>
+            <div id="theme-preview" class="theme-preview" aria-live="polite"></div>
+            <div class="form-grid two compact-grid">
+              <div>
+                <label for="sound-mode">Play sound</label>
+                <select id="sound-mode">
+                  <option value="completion">When project completes</option>
+                  <option value="task">After each task</option>
+                  <option value="both">After each task + completion</option>
+                  <option value="off">Off</option>
+                </select>
+              </div>
+              <div>
+                <label for="sound-category">Sound category</label>
+                <select id="sound-category"></select>
+              </div>
+              <div>
+                <label for="sound-subcategory">Sound subcategory</label>
+                <select id="sound-subcategory"></select>
+              </div>
+              <div>
+                <label for="specific-sound">Specific sound</label>
+                <select id="specific-sound"></select>
+              </div>
+            </div>
+            <p class="mini-note">Browser audio can play after user interaction. Web pages cannot truly override other apps, games, or operating-system volume controls.</p>
+          </section>
+
+          <label for="project-input">Project input / shared payload</label>
+          <textarea id="project-input" rows="5" placeholder="Paste the shared project payload here. Tools can consume this directly, simultaneously, or as the first step in a waterfall queue."></textarea>
+
+          <div class="project-actions">
+            <button id="run-project-simultaneous" type="button">Run simultaneous</button>
+            <button id="run-project-queue" type="button">Run queued waterfall</button>
+            <button id="clear-project-data" type="button" class="ghost-button">Clear project log</button>
+          </div>
+
+          <details open>
+            <summary>Compatible panel links</summary>
+            <ul id="project-links" class="project-list"></ul>
+          </details>
+
+          <details>
+            <summary>Project artifacts</summary>
+            <ul id="project-artifacts" class="project-list artifact-list"></ul>
+          </details>
+
+          <details>
+            <summary>Project events</summary>
+            <ul id="project-events" class="project-list"></ul>
+          </details>
+        </section>
+
+        <section class="search-card">
+          <label for="tool-search">Search tools</label>
+          <input id="tool-search" type="search" placeholder="Try: pdf, image, json, password, percent, plant..." autocomplete="off" />
+          <div class="filter-row">
+            <select id="category-filter" aria-label="Category filter"></select>
+            <select id="layout-select" aria-label="Workspace layout"></select>
+          </div>
+          <p id="result-count" class="result-count"></p>
+        </section>
+
+        <section>
+          <div class="section-title-row">
+            <h2>Tool results</h2>
+            <button id="random-tools" type="button" class="ghost-button">Surprise me</button>
+          </div>
+          <div id="tool-results" class="tool-results" aria-live="polite"></div>
+        </section>
+      </aside>
+
+      <section class="workspace-wrap" aria-label="Workspace">
+        <div class="workspace-toolbar">
+          <div>
+            <h2>Workspace</h2>
+            <p id="workspace-status">Pick AI mode or manual mode, choose a project, and add compatible tools to panels.</p>
+          </div>
+          <div class="panel-picker">
+            <label for="target-panel">Open into panel</label>
+            <select id="target-panel"></select>
+          </div>
+        </div>
+
+        <section class="progress-dashboard" aria-label="Project progress and ETA meters">
+          <div class="progress-dashboard-main">
+            <div>
+              <p class="eyebrow small">Project progress</p>
+              <h3>Total completion</h3>
+              <p id="total-progress-summary" class="mini-note">Generate or load a waterfall to start progress tracking.</p>
+            </div>
+            <div class="total-progress-stat">
+              <strong id="total-progress-percent">0%</strong>
+              <span id="total-progress-eta">ETA appears after tasks are queued</span>
+            </div>
+          </div>
+          <div class="progress-track total-progress-track" aria-hidden="true">
+            <div id="total-progress-bar" class="progress-fill total-progress-fill" style="width: 0%"></div>
+          </div>
+          <details open class="progress-details">
+            <summary>4×4 cell progress</summary>
+            <div id="cell-progress-grid" class="cell-progress-grid" aria-live="polite"></div>
+          </details>
+          <details class="progress-details">
+            <summary>Nested 64 UI progress</summary>
+            <p id="nested-progress-summary" class="mini-note">Nested UI progress appears when panels contain primary and sub-tools.</p>
+            <div id="nested-progress-grid" class="nested-progress-grid" aria-live="polite"></div>
+          </details>
+        </section>
+
+        <aside class="waterfall-side-panel" aria-label="Animated waterfall task queue">
+          <div class="waterfall-header">
+            <div>
+              <p class="eyebrow small">Waterfall panel</p>
+              <h3>Task queue</h3>
+            </div>
+            <div class="waterfall-controls">
+              <button id="start-waterfall" type="button">Start</button>
+              <button id="pause-waterfall" type="button" class="ghost-button">Pause</button>
+            </div>
+          </div>
+          <p id="waterfall-status" class="mini-note">Generate or load a project to create the task queue.</p>
+          <div class="multitask-controls" aria-label="Paid multitask controls">
+            <label class="toggle-row multitask-toggle">
+              <input id="enable-paid-multitask" type="checkbox" />
+              <span>Paid multitask — run independent tasks early</span>
+            </label>
+            <label for="multitask-parallelism">Batch limit</label>
+            <select id="multitask-parallelism">
+              <option value="2">2 tools at once</option>
+              <option value="3" selected>3 tools at once</option>
+              <option value="4">4 tools at once</option>
+              <option value="5">5 tools at once</option>
+              <option value="6">6 tools at once</option>
+            </select>
+            <p id="multitask-status" class="mini-note">Paid multitask is locked until Based on Project access is selected.</p>
+          </div>
+          <ol id="waterfall-queue" class="waterfall-queue"></ol>
+          <div class="waterfall-repair-box">
+            <label for="waterfall-task-select">Repair selected task during pause</label>
+            <select id="waterfall-task-select"></select>
+            <label for="waterfall-repair-note">What is wrong or missing?</label>
+            <textarea id="waterfall-repair-note" rows="3" placeholder="Example: this picked the wrong tool, did not include labels, or needs a more formal email tone."></textarea>
+            <button id="apply-waterfall-repair" type="button">Apply task repair</button>
+          </div>
+        </aside>
+
+        <div id="workspace-grid" class="workspace-grid"></div>
+      </section>
+    </main>
+
+    <main id="colab-view" class="colab-shell hidden" aria-label="COLAB collaboration workspace">
+      <section class="colab-hero-card">
+        <p class="eyebrow small">COLAB</p>
+        <h2>Connect cloud files, invite users, and share project workspaces</h2>
+        <p class="mini-note">COLAB is the collaboration layer for ToolGrid projects. It can start as a local foundation, then connect Google Drive, Dropbox, or a native ToolGrid backend for real account-to-account sharing.</p>
+        <div id="colab-version" class="colab-version"></div>
+      </section>
+
+      <section class="colab-grid">
+        <article class="colab-card wide">
+          <div class="section-title-row">
+            <div>
+              <p class="eyebrow small">Cloud connectors</p>
+              <h3>Provider options</h3>
+            </div>
+            <select id="colab-provider-select" aria-label="COLAB provider"></select>
+          </div>
+          <div id="colab-provider-cards" class="colab-provider-cards"></div>
+        </article>
+
+        <article class="colab-card">
+          <p class="eyebrow small">Connector setup plan</p>
+          <h3 id="colab-setup-title">Google Drive setup</h3>
+          <p id="colab-cost-note" class="mini-note"></p>
+          <ol id="colab-setup-steps" class="project-list numbered-list"></ol>
+          <p id="colab-setup-warning" class="mini-note warning-note"></p>
+          <button id="colab-build-setup-plan" type="button">Build setup plan for selected provider</button>
+        </article>
+
+        <article class="colab-card">
+          <p class="eyebrow small">Shared workspace</p>
+          <label for="colab-share-name">Share space name</label>
+          <input id="colab-share-name" type="text" placeholder="Example: Mushroom Farm Weekly Report Colab" />
+          <label for="colab-owner-email">Owner email</label>
+          <input id="colab-owner-email" type="email" placeholder="owner@example.com" />
+          <button id="colab-create-share" type="button">Create shared project space</button>
+          <div id="colab-share-spaces" class="colab-list"></div>
+        </article>
+
+        <article class="colab-card">
+          <p class="eyebrow small">Invite users</p>
+          <label for="colab-invite-email">Invite email</label>
+          <input id="colab-invite-email" type="email" placeholder="teammate@example.com" />
+          <label for="colab-invite-role">Role</label>
+          <select id="colab-invite-role">
+            <option value="viewer">Viewer — can see files and outputs</option>
+            <option value="commenter">Commenter — can review and comment</option>
+            <option value="editor">Editor — can add files and run tools</option>
+            <option value="owner">Owner — can manage sharing</option>
+          </select>
+          <label for="colab-invite-message">Invite message</label>
+          <textarea id="colab-invite-message" rows="3" placeholder="Optional note for the teammate."></textarea>
+          <button id="colab-create-invite" type="button">Create invite link</button>
+          <div id="colab-invites" class="colab-list"></div>
+        </article>
+
+        <article class="colab-card wide">
+          <p class="eyebrow small">Security rules</p>
+          <h3>What has to be true before real sharing launches</h3>
+          <ul id="colab-security-checklist" class="project-list"></ul>
+        </article>
+      </section>
+    </main>
+
+    <div id="file-confirm-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="file-confirm-title">
+      <section class="modal-card">
+        <p class="eyebrow small">File upload check</p>
+        <h2 id="file-confirm-title">All files added?</h2>
+        <p class="mini-note">Choose Yes when this is the full file set for the project. Choose No to cancel and add files again.</p>
+        <ul id="file-confirm-list" class="project-list"></ul>
+        <div class="project-actions">
+          <button id="confirm-files-yes" type="button">Yes — translate files</button>
+          <button id="confirm-files-no" type="button" class="ghost-button">No — cancel upload</button>
+        </div>
+      </section>
+    </div>
+
+    <div id="tool-selector-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="tool-selector-title">
+      <section class="modal-card tool-selector-card">
+        <div class="modal-title-row">
+          <div>
+            <p class="eyebrow small">Tool selector</p>
+            <h2 id="tool-selector-title">Choose tools for this project</h2>
+          </div>
+          <button id="close-tool-selector" type="button" class="ghost-button">Close</button>
+        </div>
+        <div class="selector-tabs" role="tablist" aria-label="Tool selector mode">
+          <button id="selector-tab-choose-own" type="button" class="selector-tab active" data-tab="choose-own">CHOOSE OWN <span>Free</span></button>
+          <button id="selector-tab-based-project" type="button" class="selector-tab" data-tab="based-on-project">BASED ON PROJECT <span>Paid</span></button>
+        </div>
+        <section id="selector-panel-choose-own" class="selector-panel active" aria-label="Choose own tools">
+          <p class="mini-note">Free mode: search and open any tools manually. Each tool has an info icon that explains its job in simple terms.</p>
+          <div class="modal-search-row">
+            <input id="selector-search" type="search" placeholder="Search tools for the active project..." autocomplete="off" />
+            <select id="selector-category"></select>
+          </div>
+          <div id="selector-own-results" class="selector-results"></div>
+        </section>
+        <section id="selector-panel-based-project" class="selector-panel" aria-label="Based on project selector">
+          <p id="based-project-access-note" class="mini-note"></p>
+          <div id="clarifying-questions" class="clarifying-questions"></div>
+          <div class="project-actions">
+            <button id="continue-project-finder" type="button">Continue project finder</button>
+            <button id="create-guided-project" type="button">Create guided waterfall</button>
+          </div>
+          <div id="based-project-suggestions" class="selector-results"></div>
+        </section>
+      </section>
+    </div>
+
+    <template id="empty-panel-template">
+      <div class="empty-panel">
+        <strong>Empty panel</strong>
+        <span>Search a tool and click “Open”.</span>
+      </div>
+    </template>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "toolgrid-2500-starter",
+  "version": "1.2.0",
+  "description": "AI project generator and manual multi-window tool workspace with 2,500 generated tool records, animated compatible workflows, and a shared project bus.",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/tool-engines.test.mjs",
+    "start": "node --watch dev-server.mjs"
+  },
+  "keywords": [
+    "tools",
+    "dashboard",
+    "search",
+    "workspace",
+    "projects",
+    "workflow",
+    "ai-project-generator",
+    "waterfall"
+  ],
+  "license": "MIT",
+  "devDependencies": {}
+}

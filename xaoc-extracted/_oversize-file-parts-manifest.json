@@ -1,0 +1,562 @@
+﻿{
+    "generated_at":  "2026-06-15T08:12:42.4586628-04:00",
+    "note":  "Oversized files were split for Cloudflare Pages upload. Reassembly requires app logic or manual reconstruction.",
+    "chunk_size_mib":  24,
+    "files":  [
+                  {
+                      "original_path":  "toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  81267291,
+                      "original_size_readable":  "77.50 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003",
+                                    "toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part004"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_audio_visualizer_studio_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  81267291,
+                      "original_size_readable":  "77.50 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_audio_visualizer_studio_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_audio_visualizer_studio_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_audio_visualizer_studio_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003",
+                                    "toolgrid_2500_audio_visualizer_studio_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part004"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_audio_visualizer_studio_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_audio_visualizer_studio_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_audio_visualizer_studio_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_audio_visualizer_studio_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_colab_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_colab_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_colab_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_colab_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_demand_ranked_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_demand_ranked_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_demand_ranked_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_demand_ranked_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_factchecker_phrase_finder_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  64849731,
+                      "original_size_readable":  "61.85 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_factchecker_phrase_finder_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_factchecker_phrase_finder_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_factchecker_phrase_finder_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_factchecker_phrase_finder_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_factchecker_phrase_finder_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_factchecker_phrase_finder_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_factchecker_phrase_finder_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_file_upload_translator_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_file_upload_translator_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_file_upload_translator_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_file_upload_translator_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_frontier_tool_expansion_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  81267291,
+                      "original_size_readable":  "77.50 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_frontier_tool_expansion_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_frontier_tool_expansion_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_frontier_tool_expansion_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003",
+                                    "toolgrid_2500_frontier_tool_expansion_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part004"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_frontier_tool_expansion_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_frontier_tool_expansion_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_frontier_tool_expansion_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_frontier_tool_expansion_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_functional_daily_tools_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  81267291,
+                      "original_size_readable":  "77.50 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_functional_daily_tools_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_functional_daily_tools_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_functional_daily_tools_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003",
+                                    "toolgrid_2500_functional_daily_tools_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part004"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_functional_daily_tools_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_functional_daily_tools_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_functional_daily_tools_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_functional_daily_tools_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch2_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch2_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch2_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch2_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch2_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch2_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch2_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch2_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch3_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch3_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch3_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch3_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch3_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch3_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch3_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch3_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch4_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch4_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch4_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch4_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch4_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch4_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch4_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch4_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch5_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch5_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch5_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch5_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch5_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch5_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch5_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch5_compatibility_foundation - Copy/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch6_compatibility_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  36861952,
+                      "original_size_readable":  "35.15 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch6_compatibility_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_inhouse_batch6_compatibility_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch6_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch6_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch6_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch6_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch7_compatibility_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  49743437,
+                      "original_size_readable":  "47.44 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch7_compatibility_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_inhouse_batch7_compatibility_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch7_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch7_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch7_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch7_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch8_progress_eta_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  64849731,
+                      "original_size_readable":  "61.85 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch8_progress_eta_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_inhouse_batch8_progress_eta_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_inhouse_batch8_progress_eta_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_batch8_progress_eta_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_batch8_progress_eta_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_batch8_progress_eta_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_batch8_progress_eta_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_inhouse_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_inhouse_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_inhouse_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_inhouse_compatibility_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_massive_tool_factory_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  81267291,
+                      "original_size_readable":  "77.50 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_massive_tool_factory_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_massive_tool_factory_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_massive_tool_factory_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003",
+                                    "toolgrid_2500_massive_tool_factory_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part004"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_massive_tool_factory_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_massive_tool_factory_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_massive_tool_factory_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_massive_tool_factory_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_maximum_functional_miniapps_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  81267291,
+                      "original_size_readable":  "77.50 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_maximum_functional_miniapps_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_maximum_functional_miniapps_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_maximum_functional_miniapps_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003",
+                                    "toolgrid_2500_maximum_functional_miniapps_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part004"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_maximum_functional_miniapps_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_maximum_functional_miniapps_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_maximum_functional_miniapps_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_maximum_functional_miniapps_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_mega_project_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_mega_project_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_mega_project_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_mega_project_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_next_frontier_unrepeated_tools_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  81267291,
+                      "original_size_readable":  "77.50 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_next_frontier_unrepeated_tools_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_next_frontier_unrepeated_tools_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_next_frontier_unrepeated_tools_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003",
+                                    "toolgrid_2500_next_frontier_unrepeated_tools_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part004"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_next_frontier_unrepeated_tools_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_next_frontier_unrepeated_tools_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_next_frontier_unrepeated_tools_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_next_frontier_unrepeated_tools_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_paid_multitask_waterfall_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_paid_multitask_waterfall_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_paid_multitask_waterfall_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_paid_multitask_waterfall_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_pg_webcam_explorer_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  64849731,
+                      "original_size_readable":  "61.85 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_pg_webcam_explorer_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_pg_webcam_explorer_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_pg_webcam_explorer_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_pg_webcam_explorer_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_pg_webcam_explorer_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_pg_webcam_explorer_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_pg_webcam_explorer_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_price_comparison_batch9_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  81267291,
+                      "original_size_readable":  "77.50 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_price_comparison_batch9_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_price_comparison_batch9_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_price_comparison_batch9_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003",
+                                    "toolgrid_2500_price_comparison_batch9_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part004"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_price_comparison_batch9_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_price_comparison_batch9_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_price_comparison_batch9_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_price_comparison_batch9_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_progress_eta_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  49743437,
+                      "original_size_readable":  "47.44 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_progress_eta_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_progress_eta_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_progress_eta_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_progress_eta_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_progress_eta_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_progress_eta_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_project_ideas_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_project_ideas_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_project_ideas_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_project_ideas_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_project_operating_system_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_project_operating_system_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_project_operating_system_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_project_operating_system_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_prompt_compiler_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_prompt_compiler_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_prompt_compiler_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_prompt_compiler_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_rgb_motion_studio_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  64849731,
+                      "original_size_readable":  "61.85 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_rgb_motion_studio_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_rgb_motion_studio_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_rgb_motion_studio_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_rgb_motion_studio_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_rgb_motion_studio_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_rgb_motion_studio_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_rgb_motion_studio_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_subscription_waterfall_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_subscription_waterfall_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_subscription_waterfall_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_subscription_waterfall_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_theme_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv",
+                      "original_size_bytes":  64849731,
+                      "original_size_readable":  "61.85 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_theme_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part001",
+                                    "toolgrid_2500_theme_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part002",
+                                    "toolgrid_2500_theme_skeleton_foundation/toolgrid-2500-starter/exports/inhouse-tool-compatibility-links.csv.parts/inhouse-tool-compatibility-links.csv.part003"
+                                ]
+                  },
+                  {
+                      "original_path":  "toolgrid_2500_theme_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js",
+                      "original_size_bytes":  60004853,
+                      "original_size_readable":  "57.23 MiB",
+                      "chunk_size_bytes":  25165824,
+                      "parts":  [
+                                    "toolgrid_2500_theme_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part001",
+                                    "toolgrid_2500_theme_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part002",
+                                    "toolgrid_2500_theme_skeleton_foundation/toolgrid-2500-starter/src/project-templates.js.parts/project-templates.js.part003"
+                                ]
+                  }
+              ]
+}
