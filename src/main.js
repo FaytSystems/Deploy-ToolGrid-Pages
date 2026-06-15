@@ -2288,7 +2288,9 @@ function submitCockpitPrompt() {
   elements.projectInput.value = project.input;
   state.clarifyingAnswers = {};
   state.clarifyingAnalysis = analyzeProjectPromptForQuestions({ prompt, fileAnalysis: state.fileAnalysis || project.fileAnalysis });
-  renderCockpitPromptBuilder(buildPromptBuilderSpec(prompt));
+  state.cockpitBuilderSpec = buildPromptBuilderSpec(prompt);
+  if (elements.commandSearchCount) elements.commandSearchCount.textContent = "Building best direct answer";
+  buildCockpitWorkflow(prompt);
 }
 
 function resolveCockpitPromptAdjustment({ force = false } = {}) {
@@ -2387,6 +2389,8 @@ function buildCockpitWorkflow(prompt) {
   state.panelFx = {};
   state.cockpitBatchIndex = 0;
   state.cockpitLastOutput = "";
+  state.cockpitGeneratedFile = null;
+  project.directAnswer = "";
   appendProjectEvent(project, `Command UI built ${project.waterfallQueue.length} workflow task${project.waterfallQueue.length === 1 ? "" : "s"} from the prompt. Estimated Cloudflare usage: ${formatCredits(state.projectCreditEstimate.credits)} credits.`, "success");
   renderBillingProfileSummary();
   renderCockpitWorkflow();
@@ -2505,7 +2509,8 @@ async function runCockpitWorkflowQueue() {
   }
 
   state.cockpitRunning = false;
-  state.cockpitLastOutput = payload;
+  state.cockpitLastOutput = buildDirectCockpitAnswer(project, { finalPayload: payload });
+  project.directAnswer = state.cockpitLastOutput;
   settleCockpitProjectCredits("project-answer");
   renderProjectConsole();
   renderCockpitWorkflow();
@@ -2592,10 +2597,177 @@ function completeCockpitFileBuild() {
   }
   state.cockpitGeneratedFile = buildMonthlyExpenseTrackerFile(project.prompt);
   state.cockpitLastOutput = state.cockpitGeneratedFile?.content || "Generated file is ready.";
+  project.directAnswer = state.cockpitLastOutput;
   settleCockpitProjectCredits("project-answer");
   renderCockpitWorkflow();
   renderCockpitAnswer();
   setCockpitPhase("answer");
+}
+
+function extractOriginalPrompt(prompt = "") {
+  const text = String(prompt || "").trim();
+  const originalMatch = text.match(/Original user prompt:\s*([\s\S]*?)(?:\nCategory focus:|\nTarget answer type:|\nDetails:|$)/i);
+  return (originalMatch?.[1] || text).trim();
+}
+
+function isLowValueToolOutput(text = "") {
+  const clean = String(text || "").trim();
+  if (!clean) return true;
+  const lower = clean.toLowerCase();
+  return [
+    "free tools save time when they are fast, private, and easy to use.",
+    "free tools workspace",
+    "free%20tools%20workspace",
+    "toolgrid",
+    "input issue:"
+  ].some((snippet) => lower === snippet || lower.includes(snippet));
+}
+
+function usefulArtifactOutputs(project) {
+  return (project.artifacts || [])
+    .filter((artifact) => artifact.status === "ok" && !isLowValueToolOutput(artifact.output))
+    .slice(0, 8)
+    .map((artifact) => ({
+      toolName: artifact.toolName,
+      outputType: artifact.outputType,
+      output: String(artifact.output || "").trim()
+    }));
+}
+
+function promptLineItems(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  return original
+    .split(/\n|;|\.\s+|\sand\s/i)
+    .map((part) => part.trim().replace(/^[-*]\s*/, ""))
+    .filter((part) => part.length > 8)
+    .slice(0, 8);
+}
+
+function buildExpenseTrackerAnswer(prompt) {
+  const categories = extractExpenseCategories(prompt);
+  const period = extractClarifiedValue(prompt, "expense-period") || extractClarifiedValue(prompt, "time-range") || "Monthly";
+  const fields = [
+    "Date",
+    "Category",
+    "Vendor",
+    "Description",
+    "Payment Method",
+    "Budgeted Amount",
+    "Actual Amount",
+    "Paid?",
+    "Notes"
+  ];
+  return [
+    "# Direct Answer",
+    "",
+    `Create a ${period.toLowerCase()} expense tracker with one summary section, one category budget section, and one transaction log. The downloadable CSV is attached above when the prompt asks for a file.`,
+    "",
+    "## Columns",
+    fields.map((field) => `- ${field}`).join("\n"),
+    "",
+    "## Starting Categories",
+    categories.map((category) => `- ${category}`).join("\n"),
+    "",
+    "## How To Use It",
+    "1. Add each expense as a new row in the transaction log.",
+    "2. Assign every row to a category.",
+    "3. Enter budgeted and actual amounts so the monthly summary can compare planned vs real spending.",
+    "4. Mark paid items and leave notes for unusual charges.",
+    "5. Review remaining money by category before adding new spending."
+  ].join("\n");
+}
+
+function buildComparisonAnswer(prompt, artifacts) {
+  const items = promptLineItems(prompt);
+  return [
+    "# Direct Answer",
+    "",
+    "Use this comparison structure to make the decision directly from the prompt details.",
+    "",
+    "| Option | Best For | Main Risk | Decision Signal |",
+    "| --- | --- | --- | --- |",
+    ...(items.length ? items : ["Option A", "Option B", "Option C"]).slice(0, 5).map((item, index) =>
+      `| ${item} | Use case ${index + 1} from the prompt | Missing cost, timing, or fit details | Keep if it scores highest on the user's priority |`
+    ),
+    "",
+    "## Recommendation",
+    "Choose the option with the clearest fit to the required outcome, lowest execution risk, and easiest handoff. If two options tie, pick the one that can be tested fastest with the least irreversible cost.",
+    artifacts.length ? `\n## Tool Evidence\n${artifacts.map((artifact) => `- ${artifact.toolName}: ${artifact.output.slice(0, 180)}`).join("\n")}` : ""
+  ].filter(Boolean).join("\n");
+}
+
+function buildWorkflowAnswer(project, prompt, artifacts) {
+  const plan = project.plan;
+  const steps = (plan?.steps || []).slice(0, 12);
+  const promptItems = promptLineItems(prompt);
+  return [
+    "# Direct Answer",
+    "",
+    `Best answer for: ${extractOriginalPrompt(prompt)}`,
+    "",
+    "## Output",
+    promptItems.length
+      ? promptItems.map((item, index) => `${index + 1}. ${item}`).join("\n")
+      : "1. Capture the exact goal.\n2. Turn the prompt into a concrete deliverable.\n3. Produce the answer in a save, share, and print-ready format.",
+    "",
+    "## Recommended Workflow",
+    steps.length
+      ? steps.map((step, index) => `${index + 1}. ${step.toolName || step.uiTitle || "Project step"}: ${step.reason || "Produce one part of the final answer."}`).join("\n")
+      : "1. Parse the request.\n2. Build the result.\n3. Review the result for missing details.\n4. Save or export the final answer.",
+    "",
+    "## Ready Handoff",
+    `- Project: ${project.name || "ToolGrid project"}`,
+    `- Target: ${plan?.intentLabel || plan?.projectTitle || "direct answer"}`,
+    `- Completed cells: ${(project.waterfallQueue || []).filter((task) => task.status === "done").length}/${(project.waterfallQueue || []).length}`,
+    artifacts.length ? `\n## Useful Tool Outputs\n${artifacts.map((artifact) => `- ${artifact.toolName}: ${artifact.output.slice(0, 220)}`).join("\n")}` : ""
+  ].filter(Boolean).join("\n");
+}
+
+function buildDesignOrSpaceAnswer(prompt) {
+  return [
+    "# Direct Answer",
+    "",
+    "Build the visual/space result as a scene plan with uploaded reference files, real dimensions where available, and inferred scale where dimensions are missing.",
+    "",
+    "## Scene Setup",
+    "- Define room or canvas size.",
+    "- Add each object with width, height, depth, material, and placement.",
+    "- Use uploaded photos as visual references.",
+    "- Keep a measurement note for every inferred dimension.",
+    "",
+    "## Output To Generate",
+    "- Top-down placement plan.",
+    "- 3D preview layout.",
+    "- Object list with dimensions.",
+    "- Export-ready summary for client, contractor, or decorator review.",
+    "",
+    `Prompt focus: ${extractOriginalPrompt(prompt)}`
+  ].join("\n");
+}
+
+function buildDirectCockpitAnswer(project, { finalPayload = "" } = {}) {
+  const prompt = project.prompt || elements.commandSearch?.value || "";
+  const originalPrompt = extractOriginalPrompt(prompt);
+  const lower = normalize(originalPrompt);
+  const artifacts = usefulArtifactOutputs(project);
+  const file = buildMonthlyExpenseTrackerFile(prompt);
+  if (file) {
+    state.cockpitGeneratedFile = file;
+    return file.content;
+  }
+  if (/\b(expense|expenses|budget|spending|bills?|costs?)\b/.test(lower)) return buildExpenseTrackerAnswer(prompt);
+  if (/\b(compare|comparison|versus| vs |which|choose|decision|best)\b/.test(lower)) return buildComparisonAnswer(prompt, artifacts);
+  if (/\b(3d|room|space|furniture|dimensions|decor|contractor|layout|cad|model)\b/.test(lower)) return buildDesignOrSpaceAnswer(prompt);
+  if (!isLowValueToolOutput(finalPayload) && String(finalPayload || "").trim().length > 120) {
+    return [
+      "# Direct Answer",
+      "",
+      `Best answer for: ${originalPrompt}`,
+      "",
+      String(finalPayload).trim()
+    ].join("\n");
+  }
+  return buildWorkflowAnswer(project, prompt, artifacts);
 }
 
 function getCockpitAnswerTitle() {
@@ -2607,6 +2779,7 @@ function getCockpitAnswerText() {
   const project = activeProject();
   const artifacts = project.artifacts || [];
   return state.cockpitGeneratedFile?.content
+    || project.directAnswer
     || state.cockpitLastOutput
     || artifacts[0]?.output
     || "Workflow completed. No text output was produced.";
@@ -2700,7 +2873,11 @@ function renderCockpitAnswer() {
   if (!elements.cockpitAnswerContent) return;
   const project = activeProject();
   const artifacts = project.artifacts.slice(0, 24);
-  state.cockpitGeneratedFile = buildMonthlyExpenseTrackerFile(project.prompt);
+  state.cockpitGeneratedFile = state.cockpitGeneratedFile || buildMonthlyExpenseTrackerFile(project.prompt);
+  if (!project.directAnswer && !state.cockpitLastOutput) {
+    state.cockpitLastOutput = buildDirectCockpitAnswer(project);
+    project.directAnswer = state.cockpitLastOutput;
+  }
   const answer = document.createElement("article");
   answer.className = "cockpit-answer-card";
   const title = document.createElement("h3");
