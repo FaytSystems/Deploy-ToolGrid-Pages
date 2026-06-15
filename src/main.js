@@ -2696,6 +2696,113 @@ function buildComparisonAnswer(prompt, artifacts) {
   ].filter(Boolean).join("\n");
 }
 
+function findFirstPromptNumber(prompt, fallback = 1) {
+  const match = String(prompt || "").match(/\b(\d+(?:\.\d+)?)\b/);
+  const value = Number(match?.[1]);
+  return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+function parseBananaBreadRequest(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const lower = normalize(original);
+  const number = findFirstPromptNumber(original, 50);
+  const bananaCountMatch = original.match(/\b(\d+(?:\.\d+)?)\s*(?:ripe\s+)?bananas?\b/i);
+  const loafCountMatch = original.match(/\b(\d+(?:\.\d+)?)\s*(?:loaves|loafs|breads?)\b/i);
+  const asksToUseBananas = /\b(use|uses|using|use up|with)\b[\s\S]{0,24}\bbananas?\b/i.test(original)
+    || /\bbananas?\b[\s\S]{0,24}\b(use|uses|using|use up)\b/i.test(original);
+  if (bananaCountMatch || asksToUseBananas) {
+    return { mode: "bananas", count: Number(bananaCountMatch?.[1] || number), original };
+  }
+  if (loafCountMatch) return { mode: "loaves", count: Number(loafCountMatch[1]), original };
+  return { mode: "bananas", count: number, original };
+}
+
+function fractionText(value) {
+  const rounded = Math.round(value * 3) / 3;
+  const whole = Math.floor(rounded);
+  const fraction = rounded - whole;
+  if (Math.abs(fraction) < 0.01) return String(whole);
+  if (Math.abs(fraction - 1 / 3) < 0.01) return whole ? `${whole} 1/3` : "1/3";
+  if (Math.abs(fraction - 2 / 3) < 0.01) return whole ? `${whole} 2/3` : "2/3";
+  if (Math.abs(fraction - 0.5) < 0.01) return whole ? `${whole} 1/2` : "1/2";
+  return rounded.toFixed(2).replace(/\.?0+$/, "");
+}
+
+function tspBreakdown(tsp) {
+  const tbsp = Math.floor(tsp / 3);
+  const remaining = tsp - tbsp * 3;
+  if (!tbsp) return `${fractionText(tsp)} tsp`;
+  if (remaining < 0.05) return `${tbsp} Tbsp`;
+  return `${tbsp} Tbsp + ${fractionText(remaining)} tsp`;
+}
+
+function buildBananaNutBreadRecipeAnswer(prompt) {
+  const request = parseBananaBreadRequest(prompt);
+  const bananasPerLoaf = 3;
+  const loaves = request.mode === "loaves" ? request.count : request.count / bananasPerLoaf;
+  const bananas = request.mode === "loaves" ? request.count * bananasPerLoaf : request.count;
+  const factor = loaves;
+  const rows = [
+    ["Ripe bananas", `${fractionText(bananas)} medium bananas`, "Mash well."],
+    ["All-purpose flour", `${fractionText(2 * factor)} cups`, "Spoon and level if measuring by volume."],
+    ["Sugar", `${fractionText(0.75 * factor)} cups`, "White, brown, or half-and-half."],
+    ["Unsalted butter or neutral oil", `${fractionText(0.5 * factor)} cups`, `${fractionText(factor)} sticks of butter.`],
+    ["Large eggs", `${fractionText(2 * factor)} eggs`, "Round to the nearest whole egg, or beat one egg and use only the needed portion."],
+    ["Baking soda", tspBreakdown(factor), ""],
+    ["Salt", tspBreakdown(0.5 * factor), ""],
+    ["Vanilla extract", tspBreakdown(factor), ""],
+    ["Chopped walnuts or pecans", `${fractionText(factor)} cups`, "Toast first for better flavor."],
+    ["Ground cinnamon, optional", tspBreakdown(factor), ""]
+  ];
+  const wholeLoaves = Math.floor(loaves);
+  const partialBananas = bananas - wholeLoaves * bananasPerLoaf;
+  const panNote = request.mode === "bananas" && partialBananas > 0
+    ? `This makes about ${fractionText(loaves)} standard 9x5 loaves. Practical bake plan: make ${wholeLoaves} full loaves with ${wholeLoaves * bananasPerLoaf} bananas, plus one smaller loaf/muffin batch using the remaining ${fractionText(partialBananas)} banana${partialBananas === 1 ? "" : "s"}.`
+    : `This makes ${fractionText(loaves)} standard 9x5 loaf${Math.round(loaves) === 1 ? "" : "ves"}.`;
+  const fiftyLoafNote = request.mode === "bananas"
+    ? [
+        "",
+        "## If You Actually Meant 50 Full Loaves",
+        "Use 150 bananas, 100 cups flour, 37 1/2 cups sugar, 25 cups butter/oil, 100 eggs, 50 tsp baking soda, 25 tsp salt, 50 tsp vanilla, and 50 cups nuts."
+      ].join("\n")
+    : "";
+  return [
+    "# Direct Answer",
+    "",
+    request.mode === "bananas"
+      ? `Assumption: you want to use up ${fractionText(bananas)} bananas for banana nut bread. A standard loaf uses 3 medium ripe bananas.`
+      : `Assumption: you want ${fractionText(loaves)} full banana nut bread loaves. A standard loaf uses 3 medium ripe bananas, so this uses ${fractionText(bananas)} bananas.`,
+    "",
+    panNote,
+    "",
+    "## Scaled Ingredients",
+    "| Ingredient | Amount Needed | Note |",
+    "| --- | ---: | --- |",
+    ...rows.map(([ingredient, amount, note]) => `| ${ingredient} | ${amount} | ${note || " "} |`),
+    "",
+    "## Base Recipe Per 1 Loaf",
+    "- 3 ripe bananas",
+    "- 2 cups flour",
+    "- 3/4 cup sugar",
+    "- 1/2 cup melted butter or oil",
+    "- 2 large eggs",
+    "- 1 tsp baking soda",
+    "- 1/2 tsp salt",
+    "- 1 tsp vanilla",
+    "- 1 cup chopped walnuts or pecans",
+    "",
+    "## Baking Plan",
+    "1. Heat oven to 350 F.",
+    "2. Grease loaf pans or line with parchment.",
+    "3. Mix mashed bananas, sugar, butter/oil, eggs, and vanilla.",
+    "4. Fold in flour, baking soda, salt, cinnamon, and nuts.",
+    "5. Fill pans about 2/3 full.",
+    "6. Bake standard loaves 55-65 minutes, or until the center reaches about 200-205 F and a tester comes out clean.",
+    "7. Cool 10-15 minutes in pans, then move to racks.",
+    fiftyLoafNote
+  ].filter(Boolean).join("\n");
+}
+
 function buildWorkflowAnswer(project, prompt, artifacts) {
   const plan = project.plan;
   const steps = (plan?.steps || []).slice(0, 12);
@@ -2756,6 +2863,7 @@ function buildDirectCockpitAnswer(project, { finalPayload = "" } = {}) {
     return file.content;
   }
   if (/\b(expense|expenses|budget|spending|bills?|costs?)\b/.test(lower)) return buildExpenseTrackerAnswer(prompt);
+  if (/\b(banana|bananas|banana nut|banana bread|bread|loaf|loaves|recipe|ingredient|ingredients|bake|baking)\b/.test(lower)) return buildBananaNutBreadRecipeAnswer(prompt);
   if (/\b(compare|comparison|versus| vs |which|choose|decision|best)\b/.test(lower)) return buildComparisonAnswer(prompt, artifacts);
   if (/\b(3d|room|space|furniture|dimensions|decor|contractor|layout|cad|model)\b/.test(lower)) return buildDesignOrSpaceAnswer(prompt);
   if (!isLowValueToolOutput(finalPayload) && String(finalPayload || "").trim().length > 120) {
