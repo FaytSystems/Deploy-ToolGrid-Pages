@@ -1,0 +1,170 @@
+ToolGrid 2500 - Current Validation Snapshot
+===========================================
+
+Package: toolgrid-2500-maximum-functional-mini-apps-foundation
+Version: 3.7.0
+Validated: 2026-06-15
+
+Commands run:
+
+npm.cmd test: passed
+npm.cmd run check: passed
+npm.cmd run scale:export: passed
+npm.cmd run audit:scale: passed
+npm.cmd run target500k:export: passed
+npm.cmd run audit:target500k: passed
+npm.cmd run target5m:export: passed
+npm.cmd run audit:target5m: passed
+npm.cmd run audit:tools -- --full --include-made --fail-on-broken: passed
+npm.cmd run audit:apps: passed
+
+Current runtime audit:
+
+- Runtime records audited across concrete + target 5M audits: 5,000,000
+- Concrete runtime records audited by full tool workflow audit: 500,000
+- Target 5M lazy runtime records audited by target batch audit: 4,500,000
+- Direct website tools/programs after target 5M layer: 1,650,000
+- Skeleton tools after target 5M layer: 1,652,500
+- Potential app/program records: 27,640
+- Production-stream activation records: 6,906
+- Production-stream made records available for include-made audits: 34,546
+- Scale expansion in-house solo tools: 6,400
+- Scale expansion app/program records: 7,600
+- Target 500K in-house solo tools added: 79,940
+- Target 500K app/program records added: 155,354
+- Target 5M in-house solo tools added: 1,500,000
+- Target 5M skeleton mirrors added: 1,500,000
+- Target 5M app/program records added: 1,500,000
+- Individual tool/program outputs passed across concrete + target 5M audits: 5,000,000
+- Broken individual records: 0
+- Representative compatible handoffs checked by tool audit: 780
+- Broken representative handoffs: 0
+
+Declared app/program wiring audit:
+
+- App/workflow records checked: 255,281
+- Declared tool ID references checked: 2,499,481
+- Declared named dependency references checked: 1,898,157
+- Unique tools executed during app wiring pass: 267,745
+- Direct declared handoffs tested: 2,301,941
+- Broken declared references: 0
+- Broken declared handoffs: 0
+- Warnings: 0
+
+Scale expansion batch audit:
+
+- Additional scale records created: 14,000
+- Production batches completed: 28
+- Domains covered: 100
+- Solo-job tools: 6,400
+- Mini-apps: 2,400
+- Apps: 1,200
+- Full-apps: 800
+- Mini-programs: 1,200
+- Programs: 1,200
+- Full-programs: 800
+- Scale records tested with practical prompts: 14,000
+- Broken scale records: 0
+
+Target 500K expansion batch audit:
+
+- Additional target records created: 235,294
+- Runtime contribution from target records and generated skeletons: 315,234
+- Production batches completed: 95
+- Domains covered: 100
+- Solo-job tools: 79,940
+- Mini-apps: 58,263
+- Apps: 33,487
+- Full-apps: 17,585
+- Mini-programs: 11,975
+- Programs: 11,974
+- Full-programs: 11,035
+- Production packs: 11,035
+- Target records tested with practical prompts: 235,294
+- Broken target records: 0
+
+Target 5M expansion batch audit:
+
+- Additional target 5M records created: 4,500,000
+- Production batches completed: 90
+- Domains covered: 100
+- Solo-job tools: 1,500,000
+- Skeleton mirrors: 1,500,000
+- Mini-apps: 450,000
+- Apps: 300,000
+- Full-apps: 225,000
+- Mini-programs: 225,000
+- Programs: 150,000
+- Full-programs: 75,000
+- Production packs: 75,000
+- Target 5M records tested with practical prompts: 4,500,000
+- Broken target 5M records: 0
+- Duplicate proof failures: 0
+- Resolver failures: 0
+- Missing app current-tool references: 0
+
+Projected final target split:
+
+- Runtime records: 5,000,000
+- Direct in-house tools/programs: 1,650,000
+- Skeleton tools: 1,652,500
+- Mini-apps: 524,455
+- Apps: 334,687
+- Full-apps: 249,835
+- Mini-programs/programs: 409,776
+- Full-programs/production packs: 179,793
+
+Fixes made during this validation pass:
+
+- Added src/scale-expansion.js for the next bounded production layer.
+- Added scripts/export-scale-expansion.mjs for the list of possible records and batches.
+- Added scripts/audit-scale-expansion.mjs for batch-by-batch prompt testing.
+- Added npm scripts scale:export and audit:scale.
+- Included scale records in the live runtime, full tool audit, and declared app/program wiring audit.
+- Fixed a bad base-chain reference from functional-markdown-export-packager to functional-markdown-export-builder.
+- Added src/target-500k-expansion.js for the 500,000-runtime production layer.
+- Added scripts/export-target-500k-expansion.mjs for the full target list and batch plan.
+- Added scripts/audit-target-500k-expansion.mjs for target batch prompt testing.
+- Added npm scripts target500k:export and audit:target500k.
+- Included target 500K records in the live runtime, full tool audit, and declared app/program wiring audit.
+- Reworked the full tool and declared app audits to stream CSV reports so 500,000-record audits do not run out of memory or hit maximum string length.
+- Added src/target-5m-expansion.js for the duplicate-safe 5,000,000 runtime layer.
+- Added scripts/export-target-5m-expansion.mjs for the 90-batch target 5M manifest and sample possibilities.
+- Added scripts/audit-target-5m-expansion.mjs for all 4,500,000 target 5M records, with failure-only CSV output and batch summaries.
+- Added npm scripts target5m:export and audit:target5m.
+- Added lazy target 5M search and resolver hooks to the cockpit UI so the page reports 5,000,000 records without materializing every generated object at startup.
+
+Latest generated reports:
+
+- exports/scale-expansion-summary.json
+- exports/scale-expansion-batches.json
+- exports/scale-expansion-possibilities.csv
+- exports/scale-expansion-possibilities.md
+- exports/scale-expansion-audit-summary.json
+- exports/scale-expansion-audit-findings.csv
+- exports/scale-expansion-audit-batches.csv
+- exports/scale-expansion-audit-notes.md
+- exports/target-500k-expansion-summary.json
+- exports/target-500k-expansion-batches.json
+- exports/target-500k-expansion-possibilities.csv
+- exports/target-500k-expansion-possibilities.md
+- exports/target-500k-expansion-audit-summary.json
+- exports/target-500k-expansion-audit-findings.csv
+- exports/target-500k-expansion-audit-batches.csv
+- exports/target-500k-expansion-audit-notes.md
+- exports/target-5m-expansion-summary.json
+- exports/target-5m-expansion-batches.json
+- exports/target-5m-expansion-batches.csv
+- exports/target-5m-expansion-samples.csv
+- exports/target-5m-expansion-possibilities.md
+- exports/target-5m-expansion-audit-summary.json
+- exports/target-5m-expansion-audit-failures.csv
+- exports/target-5m-expansion-audit-batches.csv
+- exports/target-5m-expansion-audit-notes.md
+- exports/tool-workflow-audit-summary.json
+- exports/tool-workflow-audit-findings.csv
+- exports/tool-workflow-audit-combinations.csv
+- exports/declared-app-workflow-audit-summary.json
+- exports/declared-app-workflow-audit-findings.csv
+- exports/declared-app-workflow-audit-handoffs.csv
+- exports/declared-app-workflow-audit-notes.md
