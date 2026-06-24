@@ -69,6 +69,11 @@ const cases = [
     required: [/\$250,000 loan/i, /estimated payment/i, /monthly payment/i, /Estimated interest/i]
   },
   {
+    name: "investment planning",
+    prompt: "if i had a million dollars whats the best investments",
+    required: [/no single "best" investment/i, /\$1,000,000/i, /low-cost, diversified portfolio/i, /emergency reserve/i, /fiduciary financial planner/i]
+  },
+  {
     name: "garden spacing",
     prompt: "how many tomato plants fit in a 4 by 8 foot garden bed at 18 inch spacing",
     required: [/4 ft x 8 ft bed/i, /18 in spacing/i, /plants/i, /simple grid/i]

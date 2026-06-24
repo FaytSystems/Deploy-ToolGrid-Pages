@@ -2363,6 +2363,7 @@ function cockpitDirectTitleForMode(mode, fallback = "Direct Answer Project") {
   return ({
     file: "File Builder Project",
     operations: "Operations Workflow Project",
+    investment: "Investment Planning Project",
     expense: "Expense Tracker Project",
     money: "Money Calculator Project",
     "egg-flock": "Egg Production Planner Project",

@@ -617,6 +617,83 @@ function parseMoneyNumbers(prompt) {
   return [...String(prompt || "").matchAll(/\$?\b(\d+(?:,\d{3})*(?:\.\d+)?)\b/g)].map((match) => Number(match[1].replaceAll(",", ""))).filter(Number.isFinite);
 }
 
+function extractInvestmentAmount(prompt) {
+  const text = String(prompt || "");
+  const millionMatch = text.match(/\$?\b(\d+(?:\.\d+)?)\s*(?:million|m)\b/i);
+  if (millionMatch) return Number(millionMatch[1]) * 1000000;
+  const numbers = parseMoneyNumbers(text);
+  return numbers.find((value) => value >= 10000) || (/\bmillion dollars?\b/i.test(text) ? 1000000 : 0);
+}
+
+function buildInvestmentPlanningAnswer(prompt) {
+  const amount = extractInvestmentAmount(prompt) || 1000000;
+  const money = (value) => `$${Math.round(value).toLocaleString()}`;
+  const conservative = [
+    ["Cash / T-bills / money market", 0.15, "Near-term needs, emergency reserve, dry powder"],
+    ["High-quality bonds / bond funds", 0.35, "Stability and income"],
+    ["Broad stock index funds / ETFs", 0.45, "Long-term growth"],
+    ["Alternatives / real estate / small tilt", 0.05, "Optional diversification after core portfolio"]
+  ];
+  const moderate = [
+    ["Cash / T-bills / money market", 0.10, "1-3 years of known spending or opportunity fund"],
+    ["High-quality bonds / bond funds", 0.25, "Reduce volatility and fund rebalancing"],
+    ["Broad U.S. stock index funds / ETFs", 0.40, "Core long-term growth"],
+    ["Broad international stock index funds / ETFs", 0.15, "Global diversification"],
+    ["REITs or other diversified alternatives", 0.10, "Optional, keep costs and liquidity in mind"]
+  ];
+  const aggressive = [
+    ["Cash / T-bills / money market", 0.05, "Known short-term needs"],
+    ["Bonds / bond funds", 0.15, "Shock absorber"],
+    ["Broad U.S. stock index funds / ETFs", 0.55, "Main growth engine"],
+    ["Broad international stock index funds / ETFs", 0.20, "Global growth/diversification"],
+    ["Small/value/sector tilt or alternatives", 0.05, "Only if you understand the risk"]
+  ];
+  const tableRows = (rows) => rows.map(([bucket, pct, reason]) => `| ${bucket} | ${(pct * 100).toFixed(0)}% | ${money(amount * pct)} | ${reason} |`).join("\n");
+  return [
+    "# Direct Answer",
+    "",
+    `There is no single "best" investment for ${money(amount)}. The best plan depends on time horizon, risk tolerance, taxes, debt, income needs, and whether the money must be protected for a near-term goal. This is educational, not personal financial advice.`,
+    "",
+    "If the money is long-term and high-interest debt plus emergency cash are already handled, the practical starting answer is usually a low-cost, diversified portfolio rather than one stock, one coin, one fund, or one real-estate deal.",
+    "",
+    "## First Moves Before Investing",
+    "1. Keep an emergency reserve in cash, Treasury bills, or a high-yield savings/money-market style account.",
+    "2. Pay off high-interest debt before taking market risk.",
+    "3. Set aside near-term spending money separately if you need it within 1-3 years.",
+    "4. Maximize appropriate tax-advantaged accounts where possible.",
+    "5. Decide whether the goal is preservation, income, growth, or a mix.",
+    "6. Talk with a fiduciary financial planner and tax professional before placing a large lump sum.",
+    "",
+    "## Sample $1,000,000 Allocation Frameworks",
+    "These are starting frameworks, not recommendations to buy specific securities.",
+    "",
+    "### Conservative",
+    "| Bucket | Share | Dollar Amount | Purpose |",
+    "| --- | ---: | ---: | --- |",
+    tableRows(conservative),
+    "",
+    "### Moderate",
+    "| Bucket | Share | Dollar Amount | Purpose |",
+    "| --- | ---: | ---: | --- |",
+    tableRows(moderate),
+    "",
+    "### Aggressive Long-Term",
+    "| Bucket | Share | Dollar Amount | Purpose |",
+    "| --- | ---: | ---: | --- |",
+    tableRows(aggressive),
+    "",
+    "## What I Would Need To Narrow It",
+    "- Age and investing time horizon.",
+    "- Whether this money is for retirement, income, business, house purchase, education, or general wealth building.",
+    "- Existing debt, emergency fund, income, tax bracket, and current investments.",
+    "- How much loss you could tolerate without panic-selling.",
+    "- Whether you need monthly income or can leave the money alone for 10+ years.",
+    "",
+    "## Plain-English Bottom Line",
+    `For a generic ${money(amount)} scenario, the most defensible default is not a flashy pick. It is a diversified, low-cost portfolio with enough cash/bonds for safety and broad stock index exposure for growth, adjusted to the user's timeline and risk tolerance.`
+  ].join("\n");
+}
+
 function buildMoneyCalculationAnswer(prompt) {
   const lower = normalize(prompt);
   const nums = parseMoneyNumbers(prompt);
@@ -910,6 +987,9 @@ export function buildDirectAnswerFoundation({ prompt = "", finalPayload = "", ar
   if (file) return { handled: true, file, content: file.content, mode: "file" };
   if (/\b(schedule|calendar|plan|workflow|task|checklist|routine|project|deadline|event|route|operations)\b/.test(lower)) {
     return { handled: true, content: buildScheduleOperationsAnswer(prompt), mode: "operations" };
+  }
+  if (/\b(invest|investing|investment|investments|portfolio|stocks?|bonds?|etfs?|index funds?|mutual funds?|retirement|wealth|asset allocation|million dollars?)\b/.test(lower)) {
+    return { handled: true, content: buildInvestmentPlanningAnswer(prompt), mode: "investment" };
   }
   if (/\b(expense|expenses|budget|spending|bills?|costs?)\b/.test(lower)) {
     return { handled: true, content: buildExpenseTrackerAnswer(prompt), mode: "expense" };
