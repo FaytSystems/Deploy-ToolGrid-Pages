@@ -171,6 +171,17 @@ function fractionText(value) {
   return rounded.toFixed(2).replace(/\.?0+$/, "");
 }
 
+function kitchenFractionText(value) {
+  const rounded = Math.round(value * 4) / 4;
+  const whole = Math.floor(rounded);
+  const fraction = rounded - whole;
+  if (Math.abs(fraction) < 0.01) return String(whole);
+  if (Math.abs(fraction - 0.25) < 0.01) return whole ? `${whole} 1/4` : "1/4";
+  if (Math.abs(fraction - 0.5) < 0.01) return whole ? `${whole} 1/2` : "1/2";
+  if (Math.abs(fraction - 0.75) < 0.01) return whole ? `${whole} 3/4` : "3/4";
+  return rounded.toFixed(2).replace(/\.?0+$/, "");
+}
+
 function tspBreakdown(tsp) {
   const tbsp = Math.floor(tsp / 3);
   const remaining = tsp - tbsp * 3;
@@ -241,6 +252,64 @@ function buildBananaNutBreadRecipeAnswer(prompt) {
     "7. Cool 10-15 minutes in pans, then move to racks.",
     fiftyLoafNote
   ].filter(Boolean).join("\n");
+}
+
+function isBurritoRecipeRequest(prompt) {
+  const lower = normalize(extractOriginalPrompt(prompt));
+  return /\bburritos?\b/.test(lower)
+    && /\b(how much|how many|amounts?|ingredients?|ingreidents?|needed|make|recipe|batch)\b/.test(lower);
+}
+
+function buildBurritoIngredientAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const burritoCount = Math.max(1, Math.round(extractRequestedCount(original, ["burritos?"]) || findFirstPromptNumber(original, 30)));
+  const sizeMatch = original.match(/\b(\d+(?:\.\d+)?)\s*(?:\"|in|inch|inches)\b/i);
+  const tortillaSize = Number(sizeMatch?.[1]) || 8;
+  const eggs = Math.ceil(burritoCount * 1.5);
+  const cheeseOz = burritoCount;
+  const cheeseCups = cheeseOz / 4;
+  const cookedSausageOz = burritoCount;
+  const rawSausageLb = cookedSausageOz / 16 / 0.78;
+  const baconSlices = burritoCount;
+  const rawBaconLb = baconSlices / 16;
+  const onionCups = burritoCount * 2 / 16;
+  const mediumOnions = Math.ceil(onionCups);
+  const tortillasWithWaste = Math.ceil(burritoCount * 1.1);
+  return [
+    "# Direct Answer",
+    "",
+    `For ${burritoCount} ${tortillaSize}-inch breakfast burritos with cheese, eggs, sausage, bacon, and onion, use these practical batch amounts. This assumes each burrito gets about 1 1/2 eggs, 1 oz cheese, 1 oz cooked sausage, 1 slice bacon, and 2 Tbsp diced onion.`,
+    "",
+    "## Ingredient Amounts",
+    "| Ingredient | Amount For Batch | Buying / Prep Note |",
+    "| --- | ---: | --- |",
+    `| ${tortillaSize}-inch flour tortillas | ${burritoCount} needed; buy ${tortillasWithWaste} | Buy extras for tearing or overfilling. |`,
+    `| Large eggs | ${eggs} eggs | Buy 4 dozen if making exactly ${burritoCount}; this gives a few spare. |`,
+    `| Shredded cheese | ${cheeseOz} oz, about ${kitchenFractionText(cheeseCups)} cups | Buy 2 lb if you want a little extra. |`,
+    `| Breakfast sausage | ${cookedSausageOz} oz cooked, about ${fractionText(cookedSausageOz / 16)} lb cooked | Start with about ${rawSausageLb.toFixed(1)} lb raw sausage. |`,
+    `| Bacon | ${baconSlices} cooked slices | Buy about ${rawBaconLb.toFixed(1)} lb bacon; cook crisp, then crumble or halve slices. |`,
+    `| Onion | ${kitchenFractionText(onionCups)} cups diced | About ${mediumOnions} medium onion${mediumOnions === 1 ? "" : "s"}. Saute before filling. |`,
+    "",
+    "## Seasoning / Cooking Add-Ons",
+    "| Item | Amount |",
+    "| --- | ---: |",
+    "| Salt | 2-3 tsp total, added gradually |",
+    "| Black pepper | 1-2 tsp |",
+    "| Butter or oil for eggs/onions | 4-6 Tbsp |",
+    "| Optional salsa/hot sauce | 2-4 cups on the side, not inside if freezing |",
+    "",
+    "## Assembly Plan",
+    "1. Cook bacon, drain, and crumble or cut into pieces.",
+    "2. Brown sausage and drain excess grease.",
+    "3. Saute diced onion until soft.",
+    "4. Scramble eggs softly; do not overcook if burritos will be reheated.",
+    "5. Warm tortillas so they fold without cracking.",
+    "6. Fill each tortilla with roughly: 1/2 cup egg, 2 Tbsp sausage, 1 slice bacon, 2 Tbsp onion, and 1/4 cup cheese.",
+    "7. Roll tightly. Serve now, refrigerate, or wrap individually for freezing.",
+    "",
+    "## If The Burritos Need To Be Bigger",
+    `For very full ${tortillaSize}-inch burritos, increase eggs to ${burritoCount * 2}, cheese to ${Math.ceil(burritoCount * 1.25)} oz, and use 10-inch tortillas instead.`
+  ].join("\n");
 }
 
 function isEggFlockRequest(prompt) {
@@ -998,10 +1067,13 @@ export function buildDirectAnswerFoundation({ prompt = "", finalPayload = "", ar
     return { handled: true, content: buildMoneyCalculationAnswer(prompt), mode: "money" };
   }
   if (isEggFlockRequest(prompt)) return { handled: true, content: buildEggFlockAnswer(prompt), mode: "egg-flock" };
+  if (isBurritoRecipeRequest(prompt)) {
+    return { handled: true, content: buildBurritoIngredientAnswer(prompt), mode: "recipe" };
+  }
   if (/\b(banana|bananas|banana nut|banana bread|bread|loaf|loaves|recipe|ingredient|ingredients|bake|baking)\b/.test(lower)) {
     return { handled: true, content: buildBananaNutBreadRecipeAnswer(prompt), mode: "recipe" };
   }
-  if (/\b(recipe|servings?|cook|cooking|menu|meal|ingredients?)\b/.test(lower)) {
+  if (/\b(recipe|servings?|cook|cooking|menu|meal|ingredients?|ingreidents?)\b/.test(lower)) {
     return { handled: true, content: buildGenericRecipeAnswer(prompt), mode: "recipe" };
   }
   if (isConstructionBlueprintRequest(prompt)) {

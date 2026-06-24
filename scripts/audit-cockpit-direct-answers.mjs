@@ -23,6 +23,11 @@ const cases = [
     required: [/50 medium bananas/i, /33 1\/3 cups/i, /banana nut bread/i, /baking plan/i]
   },
   {
+    name: "breakfast burrito ingredient batch",
+    prompt: "how much of each ingreident is needed to make 30 8 inch burritos, cheese, eggs, sausage, bacon, onion",
+    required: [/30 8-inch breakfast burritos/i, /45 eggs/i, /30 oz/i, /about 7 1\/2 cups/i, /30 cooked slices/i, /3 3\/4 cups diced/i]
+  },
+  {
     name: "egg flock planner",
     prompt: "how many chickens do i need if i want 50 eggs a week and what breeds get along",
     required: [/12 good laying hens/i, /ISA Brown/i, /Rhode Island Red/i, /Plymouth Rock/i, /50 eggs per week/i]
