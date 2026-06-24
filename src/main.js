@@ -8,6 +8,7 @@ import {
   readUploadedFiles,
   summarizeFileListForProjectInput
 } from "./file-translator.js";
+import { buildDirectAnswerFoundation } from "./direct-answer-engine.js";
 import {
   GUIDED_PROJECT_ORCHESTRATOR_VERSION,
   SOUND_LIBRARY,
@@ -2619,8 +2620,23 @@ function isLowValueToolOutput(text = "") {
     "free tools workspace",
     "free%20tools%20workspace",
     "toolgrid",
-    "input issue:"
+    "input issue:",
+    "skeleton tool:",
+    "current in-house tools wired",
+    "general workflow step",
+    "ready handoff"
   ].some((snippet) => lower === snippet || lower.includes(snippet));
+}
+
+function looksLikeInternalWorkflowText(text = "") {
+  return /\b(recommended workflow|ready handoff|completed cells|current in-house tools wired|skeleton tool|workflow task|support tool|tool output|scale factor)\b/i.test(String(text || ""));
+}
+
+function looksLikeStandaloneAnswer(text = "") {
+  const clean = String(text || "").trim();
+  if (isLowValueToolOutput(clean) || looksLikeInternalWorkflowText(clean)) return false;
+  const words = clean.split(/\s+/).filter(Boolean).length;
+  return words >= 90 && /(^#|##|\n\d+\.|\|.+\||materials?|steps?|instructions?|recommendation|answer)/im.test(clean);
 }
 
 function usefulArtifactOutputs(project) {
@@ -2857,6 +2873,13 @@ function buildDirectCockpitAnswer(project, { finalPayload = "" } = {}) {
   const originalPrompt = extractOriginalPrompt(prompt);
   const lower = normalize(originalPrompt);
   const artifacts = usefulArtifactOutputs(project);
+  const foundationAnswer = buildDirectAnswerFoundation({
+    prompt,
+    finalPayload,
+    artifacts: project.artifacts || []
+  });
+  if (foundationAnswer?.file) state.cockpitGeneratedFile = foundationAnswer.file;
+  if (foundationAnswer?.content) return foundationAnswer.content;
   const file = buildMonthlyExpenseTrackerFile(prompt);
   if (file) {
     state.cockpitGeneratedFile = file;
@@ -2866,7 +2889,7 @@ function buildDirectCockpitAnswer(project, { finalPayload = "" } = {}) {
   if (/\b(banana|bananas|banana nut|banana bread|bread|loaf|loaves|recipe|ingredient|ingredients|bake|baking)\b/.test(lower)) return buildBananaNutBreadRecipeAnswer(prompt);
   if (/\b(compare|comparison|versus| vs |which|choose|decision|best)\b/.test(lower)) return buildComparisonAnswer(prompt, artifacts);
   if (/\b(3d|room|space|furniture|dimensions|decor|contractor|layout|cad|model)\b/.test(lower)) return buildDesignOrSpaceAnswer(prompt);
-  if (!isLowValueToolOutput(finalPayload) && String(finalPayload || "").trim().length > 120) {
+  if (looksLikeStandaloneAnswer(finalPayload)) {
     return [
       "# Direct Answer",
       "",
