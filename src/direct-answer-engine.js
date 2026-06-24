@@ -1,3 +1,5 @@
+import { convertUnit, unitKinds } from "./tool-engines.js";
+
 function normalize(text) {
   return String(text || "").toLowerCase();
 }
@@ -21,6 +23,133 @@ function titleFromPrompt(prompt) {
   const compact = extractOriginalPrompt(prompt).replace(/\s+/g, " ").trim();
   if (!compact) return "Requested Answer";
   return compact.length > 90 ? `${compact.slice(0, 87).trim()}...` : compact;
+}
+
+function formatNumber(value, decimals = 6) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return "NaN";
+  const abs = Math.abs(parsed);
+  const rounded = abs >= 1000 || abs < 0.0001
+    ? parsed.toLocaleString("en-US", { maximumFractionDigits: decimals })
+    : parsed.toFixed(decimals).replace(/\.?0+$/, "");
+  return String(rounded);
+}
+
+function stableHash(value) {
+  const text = String(value || "");
+  let hash = 2166136261;
+  for (let index = 0; index < text.length; index += 1) {
+    hash ^= text.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function normalizeUnitTerm(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/["'`]/g, "")
+    .replace(/[-_]/g, " ")
+    .replace(/\bus\b/g, "")
+    .replace(/\bper\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\bfeet\b/g, "foot")
+    .replace(/\binches\b/g, "inch")
+    .replace(/\bounces\b/g, "ounce")
+    .replace(/\bpounds\b/g, "pound")
+    .replace(/\bcups\b/g, "cup")
+    .replace(/\bgallons\b/g, "gallon")
+    .replace(/\bmeters\b/g, "meter")
+    .replace(/\bmetres\b/g, "meter")
+    .replace(/\bcentimeters\b/g, "centimeter")
+    .replace(/\bmillimeters\b/g, "millimeter")
+    .replace(/\bkilometers\b/g, "kilometer")
+    .replace(/\bmiles\b/g, "mile")
+    .replace(/\byards\b/g, "yard")
+    .replace(/\bgrams\b/g, "gram")
+    .replace(/\bkilograms\b/g, "kilogram")
+    .replace(/\bliters\b/g, "liter")
+    .replace(/\blitres\b/g, "liter")
+    .replace(/\bseconds\b/g, "second")
+    .replace(/\bminutes\b/g, "minute")
+    .replace(/\bhours\b/g, "hour")
+    .replace(/\bdays\b/g, "day")
+    .replace(/\bweeks\b/g, "week")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const unitAliasIndex = (() => {
+  const index = new Map();
+  const add = (kind, unit, alias) => {
+    const key = normalizeUnitTerm(alias);
+    if (key && !index.has(key)) index.set(key, { kind, unit });
+  };
+  for (const [kind, units] of Object.entries(unitKinds)) {
+    for (const unit of units) {
+      const label = unit.replaceAll("_", " ");
+      add(kind, unit, unit);
+      add(kind, unit, label);
+      add(kind, unit, label.replace(/\bus\b/gi, ""));
+      add(kind, unit, label.replace(/\b30 day\b/gi, ""));
+      add(kind, unit, label.replace(/\b365 day\b/gi, ""));
+    }
+  }
+  add("length", "foot", "ft");
+  add("length", "foot", "feet");
+  add("length", "inch", "in");
+  add("length", "inch", "inches");
+  add("length", "meter", "metre");
+  add("length", "kilometer", "km");
+  add("length", "centimeter", "cm");
+  add("length", "millimeter", "mm");
+  add("mass", "pound", "lb");
+  add("mass", "pound", "lbs");
+  add("mass", "ounce", "oz");
+  add("mass", "kilogram", "kg");
+  add("mass", "gram", "g");
+  add("volume", "cup_us", "cup");
+  add("volume", "cup_us", "cups");
+  add("volume", "gallon_us", "gallon");
+  add("volume", "fluid_ounce_us", "fluid ounce");
+  add("volume", "tablespoon_us", "tablespoon");
+  add("volume", "teaspoon_us", "teaspoon");
+  add("time", "month_30_day", "month");
+  add("time", "year_365_day", "year");
+  return index;
+})();
+
+function resolveUnit(term) {
+  return unitAliasIndex.get(normalizeUnitTerm(term));
+}
+
+function unitLabel(unit) {
+  return String(unit || "").replace(/_us$/i, "").replace(/_30_day$/i, "").replace(/_365_day$/i, "").replaceAll("_", " ");
+}
+
+function buildUnitConversionAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const match = original.match(/\b(?:convert|change)\s+(-?\d+(?:\.\d+)?)\s+(.+?)\s+(?:to|into|in)\s+(.+?)(?:[?.!,]|$)/i);
+  if (!match) return null;
+  const value = Number(match[1]);
+  const from = resolveUnit(match[2]);
+  const to = resolveUnit(match[3]);
+  if (!Number.isFinite(value) || !from || !to || from.kind !== to.kind) return null;
+  const result = convertUnit(value, from.kind, from.unit, to.unit);
+  return [
+    "# Direct Answer",
+    "",
+    `${formatNumber(value)} ${unitLabel(from.unit)} = ${formatNumber(result)} ${unitLabel(to.unit)}.`,
+    "",
+    "## Calculation",
+    `- Unit family: ${from.kind}`,
+    `- From: ${formatNumber(value)} ${unitLabel(from.unit)}`,
+    `- To: ${unitLabel(to.unit)}`,
+    `- Result: ${formatNumber(result)} ${unitLabel(to.unit)}`,
+    "",
+    "Use the rounded result above for quick work; keep more decimal places if this is for engineering, dosing, quoting, or manufacturing."
+  ].join("\n");
 }
 
 function isLowValueToolOutput(text = "") {
@@ -149,6 +278,392 @@ function findFirstPromptNumber(prompt, fallback = 1) {
   const match = String(prompt || "").match(/\b(\d+(?:\.\d+)?)\b/);
   const value = Number(match?.[1]);
   return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+function extractAllNumbers(prompt) {
+  return (String(prompt || "").match(/-?\d+(?:\.\d+)?/g) || [])
+    .map(Number)
+    .filter(Number.isFinite);
+}
+
+function titleCaseText(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/\b([a-z])/g, (match) => match.toUpperCase());
+}
+
+function sentenceCaseText(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/(^\s*\w|[.!?]\s+\w)/g, (match) => match.toUpperCase());
+}
+
+function slugifyText(text) {
+  return String(text || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function extractTextPayload(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  return original.match(/\b(?:on this text|for this text|text|input)\s*:\s*([\s\S]+)$/i)?.[1]?.trim()
+    || original.match(/["'`](.+?)["'`]/)?.[1]
+    || original.match(/\bfor\s+([^:]+=[\s\S]+)$/i)?.[1]?.trim()
+    || "";
+}
+
+function buildTextTransformAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const lower = normalize(original);
+  if (!/\b(uppercase|lowercase|title case|sentence case|slug|slugify|extra space|spaces|blank line|reverse|reverser|trim|word count|reading time|find and replace|replace tool)\b/i.test(lower)) return null;
+  const payload = extractTextPayload(original) || "Paste the text to transform here.";
+  let label = "Cleaned text";
+  let output = payload.trim();
+  if (/\buppercase\b/.test(lower)) {
+    label = "Uppercase text";
+    output = payload.toUpperCase();
+  } else if (/\blowercase\b/.test(lower)) {
+    label = "Lowercase text";
+    output = payload.toLowerCase();
+  } else if (/\btitle case\b/.test(lower)) {
+    label = "Title case text";
+    output = titleCaseText(payload);
+  } else if (/\bsentence case\b/.test(lower)) {
+    label = "Sentence case text";
+    output = sentenceCaseText(payload);
+  } else if (/\bslug|slugify\b/.test(lower)) {
+    label = "Slug";
+    output = slugifyText(payload);
+  } else if (/\bextra space|spaces|trim\b/.test(lower)) {
+    label = "Whitespace-cleaned text";
+    output = payload.replace(/\s+/g, " ").trim();
+  } else if (/\bblank line\b/.test(lower)) {
+    label = "Blank-line-cleaned text";
+    output = payload.split(/\r?\n/).filter((line) => line.trim()).join("\n");
+  } else if (/\breverse|reverser\b/.test(lower)) {
+    label = "Reversed text";
+    output = [...payload].reverse().join("");
+  } else if (/\bfind and replace|replace tool\b/.test(lower)) {
+    label = "Find/replace-ready text";
+    output = payload;
+    return [
+      "# Direct Answer",
+      "",
+      "Find/replace needs two missing details: the exact text to find and the replacement text.",
+      "",
+      "## Current Text",
+      "```text",
+      output,
+      "```",
+      "",
+      "## Ready Prompt",
+      `Replace "[text to find]" with "[replacement]" in: ${payload}`,
+      "",
+      "Once those two fields are provided, the output should return only the changed text plus a short change count."
+    ].join("\n");
+  } else if (/\bword count|reading time\b/.test(lower)) {
+    const words = payload.trim() ? payload.trim().split(/\s+/).length : 0;
+    const chars = payload.length;
+    const minutes = words / 225;
+    return [
+      "# Direct Answer",
+      "",
+      `Word count: ${words}`,
+      "",
+      "## Text Stats",
+      `- Characters: ${chars}`,
+      `- Lines: ${payload.split(/\r?\n/).length}`,
+      `- Estimated reading time: ${formatNumber(minutes, 2)} minutes`,
+      "",
+      "Use this count for drafting, SEO, captions, document limits, or reading-time estimates."
+    ].join("\n");
+  }
+  return [
+    "# Direct Answer",
+    "",
+    `${label}:`,
+    "",
+    "```text",
+    output,
+    "```",
+    "",
+    "## Applied Transform",
+    `- Source text: ${payload}`,
+    `- Output type: ${label}`,
+    "- The result is ready to copy into the next workflow step."
+  ].join("\n");
+}
+
+function isoDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function parseIsoDate(value) {
+  const match = String(value || "").match(/\b(\d{4}-\d{2}-\d{2})\b/);
+  if (!match) return null;
+  const date = new Date(`${match[1]}T00:00:00Z`);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function buildDateUtilityAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const lower = normalize(original);
+  const between = original.match(/\b(?:days?|weeks?|months?)\s+between\s+(\d{4}-\d{2}-\d{2})\s+(?:and|to)\s+(\d{4}-\d{2}-\d{2})/i);
+  if (between) {
+    const start = new Date(`${between[1]}T00:00:00Z`);
+    const end = new Date(`${between[2]}T00:00:00Z`);
+    const days = Math.round((end - start) / 86400000);
+    return [
+      "# Direct Answer",
+      "",
+      `${between[1]} to ${between[2]} is ${days} days.`,
+      "",
+      "## Breakdown",
+      `- Weeks: ${formatNumber(days / 7, 2)}`,
+      `- 30-day months: ${formatNumber(days / 30, 2)}`,
+      "- Count is calendar-day difference, not inclusive of both start and end dates."
+    ].join("\n");
+  }
+  const add = original.match(/\badd\s+(-?\d+(?:\.\d+)?)\s+(days?|weeks?|months?|years?)\s+to\s+(\d{4}-\d{2}-\d{2})/i);
+  if (add) {
+    const amount = Number(add[1]);
+    const unit = add[2].toLowerCase();
+    const date = new Date(`${add[3]}T00:00:00Z`);
+    if (/week/.test(unit)) date.setUTCDate(date.getUTCDate() + amount * 7);
+    else if (/month/.test(unit)) date.setUTCMonth(date.getUTCMonth() + amount);
+    else if (/year/.test(unit)) date.setUTCFullYear(date.getUTCFullYear() + amount);
+    else date.setUTCDate(date.getUTCDate() + amount);
+    return [
+      "# Direct Answer",
+      "",
+      `${add[3]} plus ${formatNumber(amount)} ${unit} = ${isoDate(date)}.`,
+      "",
+      "## Breakdown",
+      `- Start date: ${add[3]}`,
+      `- Amount added: ${formatNumber(amount)} ${unit}`,
+      `- Result date: ${isoDate(date)}`
+    ].join("\n");
+  }
+  const unix = original.match(/\bunix(?:\s+timestamp)?\s+(\d{9,13})\b/i);
+  if (unix) {
+    const raw = Number(unix[1]);
+    const ms = raw > 9999999999 ? raw : raw * 1000;
+    const date = new Date(ms);
+    if (Number.isNaN(date.getTime())) return null;
+    return [
+      "# Direct Answer",
+      "",
+      `Unix timestamp ${unix[1]} = ${date.toISOString()}.`,
+      "",
+      "## Breakdown",
+      `- UTC date: ${isoDate(date)}`,
+      `- UTC time: ${date.toISOString().slice(11, 19)}`,
+      `- Interpreted as: ${raw > 9999999999 ? "milliseconds" : "seconds"} since 1970-01-01 UTC`
+    ].join("\n");
+  }
+  if (/\bdate|deadline|calendar|timestamp\b/.test(lower) && parseIsoDate(original)) {
+    return [
+      "# Direct Answer",
+      "",
+      `Date recognized: ${isoDate(parseIsoDate(original))}.`,
+      "",
+      "Add a second date for a difference calculation, or say how many days/weeks/months to add for a deadline result."
+    ].join("\n");
+  }
+  return null;
+}
+
+function buildDirectMathAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const lower = normalize(original);
+  if (/\bsoil mix|compost|perlite|peat\b/.test(lower)) return null;
+  const percentOf = original.match(/\bwhat\s+is\s+(-?\d+(?:\.\d+)?)\s*percent\s+of\s+(-?\d+(?:\.\d+)?)/i);
+  if (percentOf) {
+    const percent = Number(percentOf[1]);
+    const total = Number(percentOf[2]);
+    const result = total * percent / 100;
+    return [
+      "# Direct Answer",
+      "",
+      `${formatNumber(percent)}% of ${formatNumber(total)} = ${formatNumber(result)}.`,
+      "",
+      "## Math",
+      `${formatNumber(total)} x (${formatNumber(percent)} / 100) = ${formatNumber(result)}`,
+      "",
+      "Use this result as the calculated total, portion, discount amount, tax amount, or percentage share depending on the prompt."
+    ].join("\n");
+  }
+  const percentChange = original.match(/\bpercent\s+change\s+from\s+(-?\d+(?:\.\d+)?)\s+to\s+(-?\d+(?:\.\d+)?)/i);
+  if (percentChange) {
+    const start = Number(percentChange[1]);
+    const end = Number(percentChange[2]);
+    const change = ((end - start) / start) * 100;
+    return [
+      "# Direct Answer",
+      "",
+      `The percent change from ${formatNumber(start)} to ${formatNumber(end)} is ${formatNumber(change, 4)}%.`,
+      "",
+      "## Math",
+      `((${formatNumber(end)} - ${formatNumber(start)}) / ${formatNumber(start)}) x 100 = ${formatNumber(change, 4)}%`
+    ].join("\n");
+  }
+  const nums = extractAllNumbers(original);
+  const withNumbers = nums.length >= 2 && /\b(calculator|calculate|math|add|subtract|subtraction|multiply|multiplier|divide|average|area|volume|total)\b/i.test(lower);
+  if (!withNumbers) return null;
+  let label = "Calculated result";
+  let result = null;
+  let formula = "";
+  const [a, b, c = 0] = nums;
+  if (/\barea\b/.test(lower) && nums.length >= 2) {
+    label = "Area";
+    result = a * b;
+    formula = `${formatNumber(a)} x ${formatNumber(b)} = ${formatNumber(result)} square units`;
+  } else if (/\bvolume\b/.test(lower) && nums.length >= 3) {
+    label = "Volume";
+    result = a * b * c;
+    formula = `${formatNumber(a)} x ${formatNumber(b)} x ${formatNumber(c)} = ${formatNumber(result)} cubic units`;
+  } else if (/\baverage\b/.test(lower)) {
+    label = "Average";
+    result = nums.reduce((sum, value) => sum + value, 0) / nums.length;
+    formula = `(${nums.map((value) => formatNumber(value)).join(" + ")}) / ${nums.length} = ${formatNumber(result)}`;
+  } else if (/\bsubtract|subtraction|difference\b/.test(lower)) {
+    label = "Difference";
+    result = nums.slice(1).reduce((value, next) => value - next, a);
+    formula = `${nums.map((value) => formatNumber(value)).join(" - ")} = ${formatNumber(result)}`;
+  } else if (/\bmultiply|multiplication|multiplier|product\b/.test(lower)) {
+    label = "Product";
+    result = nums.reduce((value, next) => value * next, 1);
+    formula = `${nums.map((value) => formatNumber(value)).join(" x ")} = ${formatNumber(result)}`;
+  } else if (/\bdivide|division\b/.test(lower) && b !== 0) {
+    label = "Quotient";
+    result = a / b;
+    formula = `${formatNumber(a)} / ${formatNumber(b)} = ${formatNumber(result)}`;
+  } else if (/\badd|addition|sum|total\b/.test(lower)) {
+    label = "Total";
+    result = nums.reduce((sum, value) => sum + value, 0);
+    formula = `${nums.map((value) => formatNumber(value)).join(" + ")} = ${formatNumber(result)}`;
+  }
+  if (result === null) return null;
+  return [
+    "# Direct Answer",
+    "",
+    `${label}: ${formatNumber(result)}`,
+    "",
+    "## Math",
+    formula,
+    "",
+    "## Use It For",
+    "- Quick calculator output.",
+    "- Table totals or quantity checks.",
+    "- A handoff value for the next workflow cell."
+  ].join("\n");
+}
+
+function buildRandomNumberAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const match = original.match(/\bpick\s+(\d+)\s+random\s+numbers?\s+between\s+(-?\d+(?:\.\d+)?)\s+and\s+(-?\d+(?:\.\d+)?)/i)
+    || original.match(/\bgenerate\s+(\d+)\s+random\s+numbers?\s+between\s+(-?\d+(?:\.\d+)?)\s+and\s+(-?\d+(?:\.\d+)?)/i);
+  if (!match) return null;
+  const count = Math.max(1, Math.min(100, Number(match[1]) || 1));
+  const min = Math.ceil(Math.min(Number(match[2]), Number(match[3])));
+  const max = Math.floor(Math.max(Number(match[2]), Number(match[3])));
+  const span = Math.max(1, max - min + 1);
+  let seed = stableHash(original);
+  const values = [];
+  for (let index = 0; index < count; index += 1) {
+    seed = Math.imul(seed ^ (index + 1), 1664525) + 1013904223;
+    values.push(min + Math.abs(seed >>> 0) % span);
+  }
+  return [
+    "# Direct Answer",
+    "",
+    `Random number output: ${values.join(", ")}`,
+    "",
+    "## Settings",
+    `- Count: ${count}`,
+    `- Minimum: ${min}`,
+    `- Maximum: ${max}`,
+    "- Method: deterministic browser-safe pseudo-random set for repeatable project output.",
+    "",
+    "Regenerate the prompt if you need a fresh set."
+  ].join("\n");
+}
+
+function buildKeywordDensityAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  if (!/\bkeyword density\b/i.test(original)) return null;
+  const keyword = original.match(/["'`](.+?)["'`]/)?.[1] || "tool";
+  const text = extractTextPayload(original) || original;
+  const words = text.toLowerCase().match(/[a-z0-9]+/g) || [];
+  const matches = words.filter((word) => word === keyword.toLowerCase()).length;
+  const density = words.length ? (matches / words.length) * 100 : 0;
+  return [
+    "# Direct Answer",
+    "",
+    `Keyword density for "${keyword}": ${formatNumber(density, 2)}%.`,
+    "",
+    "## Count",
+    `- Keyword matches: ${matches}`,
+    `- Total words: ${words.length}`,
+    `- Density: ${formatNumber(density, 2)}%`,
+    "",
+    "## SEO Note",
+    "Use density as a sanity check, not a target by itself. The copy should still read naturally and answer the searcher's intent."
+  ].join("\n");
+}
+
+function hexToRgb(hex) {
+  const clean = String(hex || "").replace("#", "").trim();
+  if (![3, 6].includes(clean.length)) return null;
+  const full = clean.length === 3 ? clean.split("").map((char) => char + char).join("") : clean;
+  const value = Number.parseInt(full, 16);
+  if (!Number.isFinite(value)) return null;
+  return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+}
+
+function relativeLuminance(hex) {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return null;
+  const channels = rgb.map((channel) => {
+    const srgb = channel / 255;
+    return srgb <= 0.03928 ? srgb / 12.92 : ((srgb + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+}
+
+function buildContrastRatioAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  if (!/\bcontrast ratio|color contrast|contrast checker\b/i.test(original)) return null;
+  const hexes = original.match(/#[0-9a-f]{3,6}\b/gi) || [];
+  const foreground = /\bwhite\b/i.test(original) ? "#ffffff" : /\bblack\b/i.test(original) ? "#000000" : (hexes[0] || "#ffffff");
+  const background = hexes.find((hex) => hex.toLowerCase() !== foreground.toLowerCase()) || "#0b1020";
+  const a = relativeLuminance(foreground);
+  const b = relativeLuminance(background);
+  if (a === null || b === null) return null;
+  const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  const foregroundRgb = hexToRgb(foreground).join(", ");
+  const backgroundRgb = hexToRgb(background).join(", ");
+  return [
+    "# Direct Answer",
+    "",
+    `Contrast ratio for ${foreground} on ${background}: ${formatNumber(ratio, 2)}:1.`,
+    "",
+    "## Accessibility Result",
+    `- WCAG AA normal text: ${ratio >= 4.5 ? "pass" : "fail"}`,
+    `- WCAG AA large text: ${ratio >= 3 ? "pass" : "fail"}`,
+    `- WCAG AAA normal text: ${ratio >= 7 ? "pass" : "fail"}`,
+    "",
+    "## Visual Use",
+    `- Foreground RGB: ${foregroundRgb}`,
+    `- Background RGB: ${backgroundRgb}`,
+    `- Recommended setting: ${ratio >= 7 ? "safe for body copy, dense dashboards, buttons, labels, and exported visual assets." : ratio >= 4.5 ? "safe for normal UI copy; test thin fonts, small captions, and compressed exports carefully." : "use only for large decorative text, or adjust one color before shipping."}`,
+    "",
+    "Use at least 4.5:1 for normal body text and 3:1 for large text or bold UI labels. For production artwork, screenshots, motion frames, and social graphics, keep this pairing consistent across the exported asset so the text remains readable after resizing or compression."
+  ].join("\n");
 }
 
 function extractRequestedCount(prompt, nouns = []) {
@@ -690,6 +1205,8 @@ function extractInvestmentAmount(prompt) {
   const text = String(prompt || "");
   const millionMatch = text.match(/\$?\b(\d+(?:\.\d+)?)\s*(?:million|m)\b/i);
   if (millionMatch) return Number(millionMatch[1]) * 1000000;
+  const dollarMatch = text.match(/\$?\b(\d+(?:,\d{3})*(?:\.\d+)?)\s*dollars?\b/i);
+  if (dollarMatch) return Number(dollarMatch[1].replaceAll(",", ""));
   const numbers = parseMoneyNumbers(text);
   return numbers.find((value) => value >= 10000) || (/\bmillion dollars?\b/i.test(text) ? 1000000 : 0);
 }
@@ -825,8 +1342,42 @@ function buildMoneyCalculationAnswer(prompt) {
   ].join("\n");
 }
 
+function buildSoilMixAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const totalMatch = original.match(/\b(\d+(?:\.\d+)?)\s*(gallons?|gal|quarts?|liters?|litres?|cubic feet|cu ft|bags?)\s+total\b/i)
+    || original.match(/\bfrom\s+(\d+(?:\.\d+)?)\s*(gallons?|gal|quarts?|liters?|litres?|cubic feet|cu ft|bags?)\b/i);
+  const total = Number(totalMatch?.[1]) || findFirstPromptNumber(original, 10);
+  const unit = totalMatch?.[2] || "gallons";
+  const partMatches = [...original.matchAll(/\b(\d+(?:\.\d+)?)\s+parts?\s+([a-zA-Z][a-zA-Z ]{1,24})(?=\s+\d+\s+parts?|\s*$|,|;)/gi)];
+  const parts = partMatches.length
+    ? partMatches.map((match) => ({ amount: Number(match[1]), name: match[2].trim() }))
+    : [
+      { amount: 1, name: "compost" },
+      { amount: 1, name: "peat/coir" },
+      { amount: 1, name: "perlite" }
+    ];
+  const totalParts = parts.reduce((sum, item) => sum + item.amount, 0) || 1;
+  return [
+    "# Direct Answer",
+    "",
+    `For a ${formatNumber(total)} ${unit} soil mix, divide the total by ${formatNumber(totalParts)} total parts.`,
+    "",
+    "## Mix Amounts",
+    "| Component | Parts | Amount Needed |",
+    "| --- | ---: | ---: |",
+    ...parts.map((item) => `| ${item.name} | ${formatNumber(item.amount)} | ${formatNumber(total * item.amount / totalParts, 2)} ${unit} |`),
+    "",
+    "## Practical Mixing Notes",
+    "- Moisten peat/coir before final measuring if it is very dry.",
+    "- Mix dry components first, then add water slowly.",
+    "- For vegetables, add fertilizer or amendments separately based on the crop and soil test.",
+    "- Keep one extra small container of compost/perlite available for texture adjustments."
+  ].join("\n");
+}
+
 function buildGardeningAnswer(prompt) {
   const original = extractOriginalPrompt(prompt);
+  if (/\bsoil mix|compost|perlite|peat|coir\b/i.test(original)) return buildSoilMixAnswer(prompt);
   const bedMatch = original.match(/\b(\d+(?:\.\d+)?)\s*(?:ft|foot|feet|')?\s*(?:x|by)\s*(\d+(?:\.\d+)?)\s*(?:ft|foot|feet|')?\b/i);
   const spacingMatch = original.match(/\b(\d+(?:\.\d+)?)\s*(?:in|inch|inches|")\s*(?:spacing|apart|space)\b/i);
   const width = Number(bedMatch?.[1]);
@@ -862,13 +1413,39 @@ function buildGenericRecipeAnswer(prompt) {
   const original = extractOriginalPrompt(prompt);
   const fromTo = original.match(/\bfrom\s+(\d+(?:\.\d+)?)\s+(?:to|servings?\s+to)\s+(\d+(?:\.\d+)?)/i);
   const toOnly = original.match(/\b(?:for|to)\s+(\d+(?:\.\d+)?)\s+(?:servings?|people|guests?)\b/i);
+  const ingredientScale = original.match(/\bscale\s+(\d+(?:\.\d+)?)\s+([a-zA-Z]+)\s+([a-zA-Z][a-zA-Z ]{1,40}?)\s+from\s+(\d+(?:\.\d+)?)\s+servings?\s+to\s+(\d+(?:\.\d+)?)\s+servings?/i);
+  if (ingredientScale) {
+    const amount = Number(ingredientScale[1]);
+    const unit = ingredientScale[2];
+    const ingredient = ingredientScale[3].trim();
+    const fromServings = Number(ingredientScale[4]);
+    const toServings = Number(ingredientScale[5]);
+    const factor = toServings / fromServings;
+    const scaled = amount * factor;
+    return [
+      "# Direct Answer",
+      "",
+      `For ${toServings} servings, ${amount} ${unit} ${ingredient} becomes ${fractionText(scaled)} ${unit} ${ingredient}.`,
+      "",
+      "## Scaling Math",
+      `- Original servings: ${fromServings}`,
+      `- Desired servings: ${toServings}`,
+      `- Multiplier: ${formatNumber(factor, 3)}x`,
+      `- Calculation: ${formatNumber(amount)} ${unit} x ${formatNumber(factor, 3)} = ${fractionText(scaled)} ${unit}`,
+      "",
+      "## Batch Notes",
+      "- Multiply every other ingredient by the same multiplier.",
+      "- Taste-adjust salt, hot spices, acids, and extracts after mixing.",
+      "- Baking pan depth and cooking time may need adjustment when the batch size changes."
+    ].join("\n");
+  }
   const from = Number(fromTo?.[1]) || 4;
   const to = Number(fromTo?.[2] || toOnly?.[1]) || 8;
   const factor = to / from;
   return [
     "# Direct Answer",
     "",
-    `Scale the recipe by ${factor.toFixed(2).replace(/\.?0+$/, "")}x. That means every ingredient amount should be multiplied by ${factor.toFixed(2).replace(/\.?0+$/, "")}.`,
+    `Multiply each ingredient by ${factor.toFixed(2).replace(/\.?0+$/, "")}x to move from ${from} servings to ${to} servings.`,
     "",
     "## Scaling Table",
     "| Original Amount | New Amount |",
@@ -889,6 +1466,28 @@ function buildDeveloperUtilityAnswer(prompt) {
   const original = extractOriginalPrompt(prompt);
   const lower = normalize(original);
   const quoted = original.match(/["'`](.+?)["'`]/)?.[1] || "";
+  if (/\bhtml escape|escape html|html escaper\b/.test(lower) && quoted) {
+    const escaped = quoted
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+    return ["# Direct Answer", "", `HTML escaped output: \`${escaped}\``, "", "Use this when text must be displayed as literal content inside HTML instead of being interpreted as markup."].join("\n");
+  }
+  if (/\bbase64 encode|encode base64\b/.test(lower) && quoted) {
+    const encoded = typeof btoa === "function" ? btoa(unescape(encodeURIComponent(quoted))) : Buffer.from(quoted, "utf8").toString("base64");
+    return ["# Direct Answer", "", `Base64 encoded output: \`${encoded}\``, "", "Use Base64 for transport encoding, not as encryption."].join("\n");
+  }
+  if (/\bbase64 decode|decode base64\b/.test(lower) && quoted) {
+    let decoded = "";
+    try {
+      decoded = typeof atob === "function" ? decodeURIComponent(escape(atob(quoted))) : Buffer.from(quoted, "base64").toString("utf8");
+    } catch {
+      decoded = "Input could not be decoded as valid Base64.";
+    }
+    return ["# Direct Answer", "", `Base64 decoded output: \`${decoded}\``, "", "If this looks garbled, confirm the original text was encoded as UTF-8."].join("\n");
+  }
   if (/\burl encode|encode url|url-encode\b/.test(lower) && quoted) {
     return ["# Direct Answer", "", `URL encoded value: \`${encodeURIComponent(quoted)}\``, "", "Use this in query strings, redirect parameters, or API calls where spaces/symbols must be escaped."].join("\n");
   }
@@ -1054,6 +1653,23 @@ export function buildDirectAnswerFoundation({ prompt = "", finalPayload = "", ar
   const usefulArtifacts = usefulArtifactOutputs(artifacts);
   const file = buildMonthlyExpenseTrackerFile(prompt);
   if (file) return { handled: true, file, content: file.content, mode: "file" };
+  const unitConversionAnswer = buildUnitConversionAnswer(prompt);
+  if (unitConversionAnswer) return { handled: true, content: unitConversionAnswer, mode: "converter" };
+  const dateUtilityAnswer = buildDateUtilityAnswer(prompt);
+  if (dateUtilityAnswer) return { handled: true, content: dateUtilityAnswer, mode: "date" };
+  const randomNumberAnswer = buildRandomNumberAnswer(prompt);
+  if (randomNumberAnswer) return { handled: true, content: randomNumberAnswer, mode: "developer" };
+  const keywordDensityAnswer = buildKeywordDensityAnswer(prompt);
+  if (keywordDensityAnswer) return { handled: true, content: keywordDensityAnswer, mode: "content" };
+  const contrastRatioAnswer = buildContrastRatioAnswer(prompt);
+  if (contrastRatioAnswer) return { handled: true, content: contrastRatioAnswer, mode: "media" };
+  const directMathAnswer = buildDirectMathAnswer(prompt);
+  if (directMathAnswer) return { handled: true, content: directMathAnswer, mode: "money" };
+  const textTransformAnswer = buildTextTransformAnswer(prompt);
+  if (textTransformAnswer) return { handled: true, content: textTransformAnswer, mode: "developer" };
+  if (/\b(loan|mortgage|payment|interest|apr|tip|split|invoice|subtotal|tax|discount|markup|profit|price|pricing|percent|percentage|calculator)\b/.test(lower)) {
+    return { handled: true, content: buildMoneyCalculationAnswer(prompt), mode: "money" };
+  }
   if (/\b(schedule|calendar|plan|workflow|task|checklist|routine|project|deadline|event|route|operations)\b/.test(lower)) {
     return { handled: true, content: buildScheduleOperationsAnswer(prompt), mode: "operations" };
   }
@@ -1063,17 +1679,20 @@ export function buildDirectAnswerFoundation({ prompt = "", finalPayload = "", ar
   if (/\b(expense|expenses|budget|spending|bills?|costs?)\b/.test(lower)) {
     return { handled: true, content: buildExpenseTrackerAnswer(prompt), mode: "expense" };
   }
-  if (/\b(loan|mortgage|payment|interest|apr|tip|split|invoice|subtotal|tax|discount|markup|profit|price|pricing)\b/.test(lower)) {
-    return { handled: true, content: buildMoneyCalculationAnswer(prompt), mode: "money" };
+  if (/\b(developer|code|encode|decode|base64|url|uuid|password|api|debug|html|slug|escape|escaper)\b/.test(lower)) {
+    return { handled: true, content: buildDeveloperUtilityAnswer(prompt), mode: "developer" };
+  }
+  if (/\b(content|post|social|email|seo|marketing|caption|blog|newsletter|ad|sales|copy|brand|follow up|cta|subject line)\b/.test(lower)) {
+    return { handled: true, content: buildContentMarketingAnswer(prompt), mode: "content" };
   }
   if (isEggFlockRequest(prompt)) return { handled: true, content: buildEggFlockAnswer(prompt), mode: "egg-flock" };
   if (isBurritoRecipeRequest(prompt)) {
     return { handled: true, content: buildBurritoIngredientAnswer(prompt), mode: "recipe" };
   }
-  if (/\b(banana|bananas|banana nut|banana bread|bread|loaf|loaves|recipe|ingredient|ingredients|bake|baking)\b/.test(lower)) {
+  if (/\b(banana|bananas|banana nut|banana bread)\b/.test(lower)) {
     return { handled: true, content: buildBananaNutBreadRecipeAnswer(prompt), mode: "recipe" };
   }
-  if (/\b(recipe|servings?|cook|cooking|menu|meal|ingredients?|ingreidents?)\b/.test(lower)) {
+  if (/\b(recipe|servings?|cook|cooking|menu|meal|ingredients?|ingreidents?|bake|baking)\b/.test(lower)) {
     return { handled: true, content: buildGenericRecipeAnswer(prompt), mode: "recipe" };
   }
   if (isConstructionBlueprintRequest(prompt)) {
@@ -1084,12 +1703,6 @@ export function buildDirectAnswerFoundation({ prompt = "", finalPayload = "", ar
   }
   if (/\b(csv|json|spreadsheet|table|data|clean|dedupe|normalize|analyze|report|dashboard|rows?|columns?)\b/.test(lower)) {
     return { handled: true, content: buildDataWorkflowAnswer(prompt), mode: "data" };
-  }
-  if (/\b(content|post|social|email|seo|marketing|caption|blog|newsletter|ad|sales|copy|brand|follow up)\b/.test(lower)) {
-    return { handled: true, content: buildContentMarketingAnswer(prompt), mode: "content" };
-  }
-  if (/\b(developer|code|encode|decode|base64|url|uuid|password|api|debug|html|slug)\b/.test(lower)) {
-    return { handled: true, content: buildDeveloperUtilityAnswer(prompt), mode: "developer" };
   }
   if (/\b(image|video|audio|visual|theme|color|rgb|logo|design|render|clip|music|visualizer|asset)\b/.test(lower)) {
     return { handled: true, content: buildMediaDesignAnswer(prompt), mode: "media" };
