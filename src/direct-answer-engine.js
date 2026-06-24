@@ -28,7 +28,9 @@ function isLowValueToolOutput(text = "") {
   if (!clean) return true;
   const lower = clean.toLowerCase();
   return [
+    "free tools save time",
     "free tools save time when they are fast, private, and easy to use.",
+    "free tools save time when they can share project data.",
     "free tools workspace",
     "free%20tools%20workspace",
     "toolgrid",
@@ -492,6 +494,339 @@ function buildConstructionBlueprintAnswer(prompt) {
   ].join("\n");
 }
 
+function buildContentMarketingAnswer(prompt) {
+  const subject = titleFromPrompt(prompt);
+  const lower = normalize(prompt);
+  const isEmail = /\bemail|newsletter|subject line|customer follow/i.test(lower);
+  const isSeo = /\bseo|blog|meta|keyword|landing page/i.test(lower);
+  return [
+    "# Direct Answer",
+    "",
+    `Use this content pack for: ${subject}`,
+    "",
+    "## Positioning",
+    "- Audience: the people most likely to need the offer or information in the prompt.",
+    "- Core promise: make the result clear, useful, and easy to act on.",
+    "- Tone: practical, direct, and specific; avoid vague hype.",
+    "",
+    isEmail ? "## Email Draft" : "## Main Copy",
+    isEmail
+      ? [
+          "Subject: Quick update for your next step",
+          "",
+          "Hi [Name],",
+          "",
+          `I wanted to follow up about ${subject}. The next best step is to confirm the details, choose a date, and make sure nothing is missing before we move forward.`,
+          "",
+          "Reply with any changes, questions, or timing constraints and I will update the plan.",
+          "",
+          "Thanks,"
+        ].join("\n")
+      : [
+          `Headline: ${subject}`,
+          "",
+          "Short body: Get the key details in one clear plan, with the next action already mapped out.",
+          "",
+          "Call to action: Review the details, choose the option that fits, and save the final version."
+        ].join("\n"),
+    "",
+    "## Variants",
+    "- Short social post: Clear, useful, and ready to act on. Here is the plan, the key details, and the next step.",
+    "- Friendly version: Here is the simplest way to move this forward without guessing or missing the important pieces.",
+    "- Professional version: The attached plan summarizes the goal, working assumptions, action items, and recommended next step.",
+    "",
+    isSeo ? "## SEO Structure\n- Page title: Keep under 60 characters.\n- Meta description: Keep under 155 characters.\n- Include the main keyword in the heading, opening paragraph, and one subheading.\n- Add a clear FAQ section with real customer questions." : "",
+    "",
+    "## Quality Checks",
+    "- Names, prices, dates, and claims from the prompt are preserved.",
+    "- The first sentence explains the value.",
+    "- The CTA tells the reader exactly what to do next.",
+    "- The final version can be copied into email, social, web, or a document without internal ToolGrid notes."
+  ].filter(Boolean).join("\n");
+}
+
+function buildDataWorkflowAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const columnMatch = original.match(/\b(?:columns?|fields?)\s*(?:are|:)?\s*([^.\n]+)/i);
+  const columns = (columnMatch?.[1] || "date, name, category, amount, status, notes")
+    .split(/[,|]/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 10);
+  return [
+    "# Direct Answer",
+    "",
+    `Use this data workflow for: ${titleFromPrompt(prompt)}`,
+    "",
+    "## Output Table",
+    `| ${columns.join(" | ")} | Issue Flag | Cleaned Value |`,
+    `| ${columns.map(() => "---").join(" | ")} | --- | --- |`,
+    `| sample | ${columns.slice(1).map(() => "sample").join(" | ")} | Check blanks, duplicates, bad formats | normalized row |`,
+    "",
+    "## Cleaning Rules",
+    "1. Trim leading/trailing spaces from every text field.",
+    "2. Standardize dates to YYYY-MM-DD where possible.",
+    "3. Standardize money/number fields to plain numbers.",
+    "4. Remove exact duplicate rows.",
+    "5. Flag rows missing required fields instead of silently deleting them.",
+    "6. Keep an original-value column when a value is changed.",
+    "",
+    "## Summary Report",
+    "- Total rows received: count all input rows.",
+    "- Rows cleaned: count rows with at least one changed value.",
+    "- Duplicates removed: count exact duplicate rows.",
+    "- Rows needing review: count missing or invalid required values.",
+    "- Export: CSV-ready table plus a short markdown summary.",
+    "",
+    "## Handoff",
+    "After cleaning, save the cleaned table, the issue list, and the assumptions used so the user can audit the changes."
+  ].join("\n");
+}
+
+function buildScheduleOperationsAnswer(prompt) {
+  return [
+    "# Direct Answer",
+    "",
+    `Use this operations plan for: ${titleFromPrompt(prompt)}`,
+    "",
+    "## Working Schedule",
+    "| Phase | Owner | Due | Output |",
+    "| --- | --- | --- | --- |",
+    "| 1. Intake | Project owner | Today | Goal, constraints, and required output confirmed |",
+    "| 2. Prep | Assigned helper/team | Next available work block | Materials, files, contacts, and calendar holds ready |",
+    "| 3. Execution | Task owner | Main work window | Work completed in order, blockers logged |",
+    "| 4. Review | Project owner | Same day as completion | Check quality, missing items, and next actions |",
+    "| 5. Handoff | Project owner | Final step | Save, share, print, or send final output |",
+    "",
+    "## Checklist",
+    "- Define the final deliverable before starting.",
+    "- Put deadlines and appointments on the calendar.",
+    "- Assign one owner per task.",
+    "- List materials, files, links, contacts, or budget limits.",
+    "- Add a review step before anything is submitted, printed, cut, sent, or purchased.",
+    "- Save the finished answer and any generated file.",
+    "",
+    "## Risk Controls",
+    "- If a required detail is missing, make a visible assumption and label it.",
+    "- If cost or safety is involved, add a verify-before-buying or verify-before-building step.",
+    "- If another person must approve it, put approval before final handoff."
+  ].join("\n");
+}
+
+function parseMoneyNumbers(prompt) {
+  return [...String(prompt || "").matchAll(/\$?\b(\d+(?:,\d{3})*(?:\.\d+)?)\b/g)].map((match) => Number(match[1].replaceAll(",", ""))).filter(Number.isFinite);
+}
+
+function buildMoneyCalculationAnswer(prompt) {
+  const lower = normalize(prompt);
+  const nums = parseMoneyNumbers(prompt);
+  if (/\bloan|mortgage|payment|interest|apr\b/.test(lower) && nums.length >= 3) {
+    const principal = nums[0];
+    const annualRate = nums.find((value, index) => index > 0 && value > 0 && value < 30) || nums[1];
+    const years = nums.find((value) => value >= 1 && value <= 40 && value !== annualRate) || nums[2];
+    const monthlyRate = annualRate / 100 / 12;
+    const payments = years * 12;
+    const monthly = monthlyRate === 0 ? principal / payments : principal * (monthlyRate * (1 + monthlyRate) ** payments) / ((1 + monthlyRate) ** payments - 1);
+    const totalPaid = monthly * payments;
+    return [
+      "# Direct Answer",
+      "",
+      `For a $${Math.round(principal).toLocaleString()} loan at ${annualRate}% for ${years} years, the estimated payment is about $${monthly.toFixed(2)} per month.`,
+      "",
+      "## Breakdown",
+      `- Principal: $${Math.round(principal).toLocaleString()}`,
+      `- Term: ${years} years / ${payments} payments`,
+      `- Estimated monthly payment: $${monthly.toFixed(2)}`,
+      `- Total paid: $${totalPaid.toFixed(2)}`,
+      `- Estimated interest: $${(totalPaid - principal).toFixed(2)}`,
+      "",
+      "## Note",
+      "This is a basic principal-and-interest estimate. Taxes, insurance, fees, PMI, escrow, and lender terms can change the real payment."
+    ].join("\n");
+  }
+  if (/\btip|split|bill\b/.test(lower) && nums.length >= 2) {
+    const bill = nums[0];
+    const tipPercent = nums.find((value) => value > 0 && value <= 40) || 20;
+    const people = nums.find((value) => value > 1 && value < 30 && value !== tipPercent) || 1;
+    const tip = bill * tipPercent / 100;
+    const total = bill + tip;
+    return [
+      "# Direct Answer",
+      "",
+      `For a $${bill.toFixed(2)} bill with a ${tipPercent}% tip, total is $${total.toFixed(2)}.`,
+      "",
+      "## Breakdown",
+      `- Tip: $${tip.toFixed(2)}`,
+      `- Total: $${total.toFixed(2)}`,
+      `- Per person: $${(total / people).toFixed(2)} across ${people} ${people === 1 ? "person" : "people"}`
+    ].join("\n");
+  }
+  return [
+    "# Direct Answer",
+    "",
+    `Use this money plan for: ${titleFromPrompt(prompt)}`,
+    "",
+    "## Calculation Setup",
+    "| Field | What To Enter |",
+    "| --- | --- |",
+    "| Starting amount | Principal, subtotal, bill amount, or budget total |",
+    "| Rate or percent | Tax, tip, interest, markup, discount, or growth rate |",
+    "| Time or quantity | Months, years, people, units, or line items |",
+    "| Final output | Payment, total, profit, remaining budget, or per-person split |",
+    "",
+    "## Handoff",
+    "Add the exact numbers and ToolGrid can produce the final calculated amount, itemized breakdown, and assumption notes."
+  ].join("\n");
+}
+
+function buildGardeningAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const bedMatch = original.match(/\b(\d+(?:\.\d+)?)\s*(?:ft|foot|feet|')?\s*(?:x|by)\s*(\d+(?:\.\d+)?)\s*(?:ft|foot|feet|')?\b/i);
+  const spacingMatch = original.match(/\b(\d+(?:\.\d+)?)\s*(?:in|inch|inches|")\s*(?:spacing|apart|space)\b/i);
+  const width = Number(bedMatch?.[1]);
+  const length = Number(bedMatch?.[2]);
+  const spacing = Number(spacingMatch?.[1]);
+  const hasPlantCount = width && length && spacing;
+  const across = hasPlantCount ? Math.floor((width * 12) / spacing) : 0;
+  const down = hasPlantCount ? Math.floor((length * 12) / spacing) : 0;
+  const count = Math.max(0, across * down);
+  return [
+    "# Direct Answer",
+    "",
+    hasPlantCount
+      ? `For a ${width} ft x ${length} ft bed with ${spacing} in spacing, plan on about ${count} plants in a simple grid (${across} across by ${down} down).`
+      : `Use this garden plan for: ${titleFromPrompt(prompt)}`,
+    "",
+    "## Planting Plan",
+    hasPlantCount ? `- Bed area: ${width * length} sq ft.` : "- Measure the bed length and width.",
+    hasPlantCount ? `- Spacing: ${spacing} in on center.` : "- Choose spacing by mature plant width.",
+    hasPlantCount ? `- Practical count: ${count} plants before path/edge adjustments.` : "- Count planting positions row by row.",
+    "- Leave room at edges for airflow and harvesting.",
+    "- Group plants with similar water and sun needs.",
+    "",
+    "## Soil And Care",
+    "- Add compost before planting.",
+    "- Mulch after seedlings are established.",
+    "- Water deeply instead of lightly sprinkling.",
+    "- Recheck spacing if the crop sprawls, vines, or needs trellis support."
+  ].join("\n");
+}
+
+function buildGenericRecipeAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const fromTo = original.match(/\bfrom\s+(\d+(?:\.\d+)?)\s+(?:to|servings?\s+to)\s+(\d+(?:\.\d+)?)/i);
+  const toOnly = original.match(/\b(?:for|to)\s+(\d+(?:\.\d+)?)\s+(?:servings?|people|guests?)\b/i);
+  const from = Number(fromTo?.[1]) || 4;
+  const to = Number(fromTo?.[2] || toOnly?.[1]) || 8;
+  const factor = to / from;
+  return [
+    "# Direct Answer",
+    "",
+    `Scale the recipe by ${factor.toFixed(2).replace(/\.?0+$/, "")}x. That means every ingredient amount should be multiplied by ${factor.toFixed(2).replace(/\.?0+$/, "")}.`,
+    "",
+    "## Scaling Table",
+    "| Original Amount | New Amount |",
+    "| ---: | ---: |",
+    `| 1 cup | ${fractionText(factor)} cups |`,
+    `| 1 Tbsp | ${fractionText(factor)} Tbsp |`,
+    `| 1 tsp | ${fractionText(factor)} tsp |`,
+    `| 1 lb | ${fractionText(factor)} lb |`,
+    "",
+    "## Cooking Notes",
+    "- Seasoning, salt, hot spices, and leavening may need small taste/texture adjustments after scaling.",
+    "- Pan size and cooking time do not always scale linearly.",
+    "- For baked goods, keep batter depth similar to the original recipe."
+  ].join("\n");
+}
+
+function buildDeveloperUtilityAnswer(prompt) {
+  const original = extractOriginalPrompt(prompt);
+  const lower = normalize(original);
+  const quoted = original.match(/["'`](.+?)["'`]/)?.[1] || "";
+  if (/\burl encode|encode url|url-encode\b/.test(lower) && quoted) {
+    return ["# Direct Answer", "", `URL encoded value: \`${encodeURIComponent(quoted)}\``, "", "Use this in query strings, redirect parameters, or API calls where spaces/symbols must be escaped."].join("\n");
+  }
+  if (/\burl decode|decode url|url-decode\b/.test(lower) && quoted) {
+    let decoded = quoted;
+    try {
+      decoded = decodeURIComponent(quoted);
+    } catch {
+      decoded = "Input could not be decoded as a valid URL-encoded string.";
+    }
+    return ["# Direct Answer", "", `URL decoded value: \`${decoded}\``, "", "If the input contains incomplete percent escapes, fix those before decoding."].join("\n");
+  }
+  return [
+    "# Direct Answer",
+    "",
+    `Use this developer utility plan for: ${titleFromPrompt(prompt)}`,
+    "",
+    "## Steps",
+    "1. Identify the input format: text, JSON, CSV, URL, Base64, HTML, number, or color.",
+    "2. Validate the input before transforming it.",
+    "3. Run the requested conversion or generator.",
+    "4. Return both the output and a note about invalid or missing input.",
+    "",
+    "## Common Outputs",
+    "- JSON: pretty print, minify, validate, or list keys.",
+    "- URL: encode/decode components safely.",
+    "- Text: clean whitespace, slugify, title-case, or extract lines.",
+    "- Security helper: generate UUIDs or strong passwords without sending data to outside services."
+  ].join("\n");
+}
+
+function buildMediaDesignAnswer(prompt) {
+  return [
+    "# Direct Answer",
+    "",
+    `Use this media/design plan for: ${titleFromPrompt(prompt)}`,
+    "",
+    "## Creative Brief",
+    "- Output: image, video, audio visualizer, RGB motion preset, theme, logo, clip, or asset pack.",
+    "- Style: define colors, mood, motion, brand feel, and any hard exclusions.",
+    "- Source: list uploaded files, pasted text, dimensions, product photos, or audio URLs.",
+    "- Variations: choose count, aspect ratio, duration, and export type.",
+    "",
+    "## Production Settings",
+    "| Setting | Practical Default |",
+    "| --- | --- |",
+    "| Variations | 4 for normal design, 64 for visualizer/gallery mode |",
+    "| Export | PNG for static, GIF/MP4 for motion, JSON/CSS for theme presets |",
+    "| Review | Pick one best version, then make 3 refinements |",
+    "| Handoff | Save source settings and final export together |",
+    "",
+    "## Quality Checks",
+    "- The output matches the requested format.",
+    "- Text is readable at mobile size.",
+    "- Colors have enough contrast.",
+    "- Motion is not too fast for normal viewing.",
+    "- Files are named clearly for download or reuse."
+  ].join("\n");
+}
+
+function buildResearchAnswer(prompt) {
+  return [
+    "# Direct Answer",
+    "",
+    `Use this research/verification plan for: ${titleFromPrompt(prompt)}`,
+    "",
+    "## Evidence Table",
+    "| Claim or Option | Source Needed | What To Check | Decision Impact |",
+    "| --- | --- | --- | --- |",
+    "| Main claim from prompt | Primary/original source | Exact wording, date, author, and context | Keep only if verified |",
+    "| Competing option | Official page or reliable reference | Cost, constraints, compatibility, risk | Compare against criteria |",
+    "| Missing detail | User-provided or authoritative source | Whether the answer needs a caveat | Mark as assumption if unresolved |",
+    "",
+    "## Verification Rules",
+    "- Prefer original documents, official sources, or direct data over summaries.",
+    "- Record dates because pricing, rules, and availability can change.",
+    "- Separate confirmed facts from assumptions.",
+    "- Finish with a recommendation only after the criteria are visible.",
+    "",
+    "## Output",
+    "Return a ranked table, a short recommendation, evidence notes, and the open questions that would change the answer."
+  ].join("\n");
+}
+
 function buildComparisonAnswer(prompt, artifacts) {
   const items = extractOriginalPrompt(prompt)
     .split(/\n|;|\.\s+|\sand\s/i)
@@ -573,15 +908,42 @@ export function buildDirectAnswerFoundation({ prompt = "", finalPayload = "", ar
   const usefulArtifacts = usefulArtifactOutputs(artifacts);
   const file = buildMonthlyExpenseTrackerFile(prompt);
   if (file) return { handled: true, file, content: file.content, mode: "file" };
+  if (/\b(schedule|calendar|plan|workflow|task|checklist|routine|project|deadline|event|route|operations)\b/.test(lower)) {
+    return { handled: true, content: buildScheduleOperationsAnswer(prompt), mode: "operations" };
+  }
   if (/\b(expense|expenses|budget|spending|bills?|costs?)\b/.test(lower)) {
     return { handled: true, content: buildExpenseTrackerAnswer(prompt), mode: "expense" };
+  }
+  if (/\b(loan|mortgage|payment|interest|apr|tip|split|invoice|subtotal|tax|discount|markup|profit|price|pricing)\b/.test(lower)) {
+    return { handled: true, content: buildMoneyCalculationAnswer(prompt), mode: "money" };
   }
   if (isEggFlockRequest(prompt)) return { handled: true, content: buildEggFlockAnswer(prompt), mode: "egg-flock" };
   if (/\b(banana|bananas|banana nut|banana bread|bread|loaf|loaves|recipe|ingredient|ingredients|bake|baking)\b/.test(lower)) {
     return { handled: true, content: buildBananaNutBreadRecipeAnswer(prompt), mode: "recipe" };
   }
+  if (/\b(recipe|servings?|cook|cooking|menu|meal|ingredients?)\b/.test(lower)) {
+    return { handled: true, content: buildGenericRecipeAnswer(prompt), mode: "recipe" };
+  }
   if (isConstructionBlueprintRequest(prompt)) {
     return { handled: true, content: buildConstructionBlueprintAnswer(prompt), mode: "construction" };
+  }
+  if (/\b(garden|plant|plants|spacing|soil|seed|compost|grow|greenhouse|bed)\b/.test(lower)) {
+    return { handled: true, content: buildGardeningAnswer(prompt), mode: "gardening" };
+  }
+  if (/\b(csv|json|spreadsheet|table|data|clean|dedupe|normalize|analyze|report|dashboard|rows?|columns?)\b/.test(lower)) {
+    return { handled: true, content: buildDataWorkflowAnswer(prompt), mode: "data" };
+  }
+  if (/\b(content|post|social|email|seo|marketing|caption|blog|newsletter|ad|sales|copy|brand|follow up)\b/.test(lower)) {
+    return { handled: true, content: buildContentMarketingAnswer(prompt), mode: "content" };
+  }
+  if (/\b(developer|code|encode|decode|base64|url|uuid|password|api|debug|html|slug)\b/.test(lower)) {
+    return { handled: true, content: buildDeveloperUtilityAnswer(prompt), mode: "developer" };
+  }
+  if (/\b(image|video|audio|visual|theme|color|rgb|logo|design|render|clip|music|visualizer|asset)\b/.test(lower)) {
+    return { handled: true, content: buildMediaDesignAnswer(prompt), mode: "media" };
+  }
+  if (/\b(research|fact|verify|source|quote|evidence|citation)\b/.test(lower)) {
+    return { handled: true, content: buildResearchAnswer(prompt), mode: "research" };
   }
   if (/\b(compare|comparison|versus| vs |which|choose|decision|best)\b/.test(lower)) {
     return { handled: true, content: buildComparisonAnswer(prompt, usefulArtifacts), mode: "comparison" };

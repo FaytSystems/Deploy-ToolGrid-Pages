@@ -2284,7 +2284,7 @@ function submitCockpitPrompt() {
   }
   const project = activeProject();
   project.prompt = prompt;
-  project.input = elements.projectInput?.value.trim() || prompt;
+  project.input = prompt;
   elements.aiPrompt.value = prompt;
   elements.projectInput.value = project.input;
   state.clarifyingAnswers = {};
@@ -2359,6 +2359,28 @@ function createCockpitFileBuildPlan(prompt) {
   };
 }
 
+function cockpitDirectTitleForMode(mode, fallback = "Direct Answer Project") {
+  return ({
+    file: "File Builder Project",
+    operations: "Operations Workflow Project",
+    expense: "Expense Tracker Project",
+    money: "Money Calculator Project",
+    "egg-flock": "Egg Production Planner Project",
+    recipe: "Recipe Scale Planner Project",
+    construction: "Blueprint And Materials Project",
+    gardening: "Garden Planner Project",
+    data: "Data Cleanup Project",
+    content: "Content Builder Project",
+    developer: "Developer Utility Project",
+    media: "Media Design Project",
+    research: "Research Verification Project",
+    comparison: "Comparison Decision Project",
+    space: "3D Space Planner Project",
+    payload: "Direct Answer Project",
+    fallback: "Direct Answer Project"
+  })[mode] || fallback;
+}
+
 function buildCockpitWorkflow(prompt) {
   clearTimeout(state.cockpitAutoResolveTimer);
   syncModeToProject();
@@ -2367,13 +2389,19 @@ function buildCockpitWorkflow(prompt) {
   elements.workspaceMode.value = WORKSPACE_MODES.AI;
   project.mode = WORKSPACE_MODES.AI;
   project.prompt = prompt;
-  project.input = elements.projectInput?.value.trim() || prompt;
+  project.input = prompt;
   const isFileBuild = isMonthlyExpenseFileRequest(prompt);
   const maxWorkflowTasks = isFileBuild ? 8 : 128;
   const plan = isFileBuild ? createCockpitFileBuildPlan(prompt) : generateAiProjectPlan({ prompt, tools: getPlanningToolsForPrompt(prompt), maxPanels: maxWorkflowTasks });
+  const directProfile = isFileBuild ? { mode: "file" } : buildDirectAnswerFoundation({ prompt });
+  const directTitle = cockpitDirectTitleForMode(directProfile?.mode, plan.projectTitle || project.name);
+  if (!isFileBuild && directProfile?.mode && directProfile.mode !== "fallback") {
+    plan.projectTitle = directTitle;
+    plan.intentLabel = directTitle.replace(/\s+Project$/i, "");
+  }
   project.plan = plan;
   project.compiler = plan.compiler;
-  project.name = plan.projectTitle || project.name;
+  project.name = plan.projectTitle || directTitle || project.name;
   project.waterfallQueue = buildWaterfallQueueFromPlan(plan, { maxTasks: maxWorkflowTasks });
   state.projectCreditEstimate = buildProjectEstimateFromQueue(project);
   project.creditEstimate = state.projectCreditEstimate;
@@ -2616,7 +2644,9 @@ function isLowValueToolOutput(text = "") {
   if (!clean) return true;
   const lower = clean.toLowerCase();
   return [
+    "free tools save time",
     "free tools save time when they are fast, private, and easy to use.",
+    "free tools save time when they can share project data.",
     "free tools workspace",
     "free%20tools%20workspace",
     "toolgrid",
@@ -2920,6 +2950,28 @@ function setAnswerActionStatus(message) {
   if (elements.answerActionStatus) elements.answerActionStatus.textContent = message;
 }
 
+function compactComparableText(text = "") {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isLowValueCockpitArtifact(artifact, prompt = "") {
+  const output = String(artifact?.output || "").trim();
+  if (!output) return true;
+  if (isLowValueToolOutput(output) || looksLikeInternalWorkflowText(output)) return true;
+  const compactOutput = compactComparableText(output);
+  const compactPrompt = compactComparableText(extractOriginalPrompt(prompt));
+  if (compactPrompt.length > 24 && compactOutput.includes(compactPrompt)) {
+    const remainder = compactOutput.replace(compactPrompt, "").replace(/\b(markdown|cockpit|workflow|table|text|---)\b/g, " ");
+    const uniqueRemainderWords = new Set(remainder.split(/\s+/).filter((word) => word.length > 2));
+    if (uniqueRemainderWords.size < 8) return true;
+  }
+  return false;
+}
+
 function downloadTextFile({ filename, mime, content }) {
   const blob = new Blob([content], { type: mime || "text/plain" });
   const url = URL.createObjectURL(blob);
@@ -3003,7 +3055,9 @@ function adjustCockpitAnswerPrompt() {
 function renderCockpitAnswer() {
   if (!elements.cockpitAnswerContent) return;
   const project = activeProject();
-  const artifacts = project.artifacts.slice(0, 24);
+  const artifacts = project.artifacts
+    .filter((artifact) => artifact.status === "ok" && !isLowValueCockpitArtifact(artifact, project.prompt))
+    .slice(0, 24);
   state.cockpitGeneratedFile = state.cockpitGeneratedFile || buildMonthlyExpenseTrackerFile(project.prompt);
   if (!project.directAnswer && !state.cockpitLastOutput) {
     state.cockpitLastOutput = buildDirectCockpitAnswer(project);

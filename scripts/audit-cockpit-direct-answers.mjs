@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 
 import { tools } from "../src/tool-catalog.js";
 import { buildWaterfallQueueFromPlan } from "../src/guided-project-orchestrator.js";
-import { generateAiProjectPlan } from "../src/project-foundation.js";
+import { buildInputsFromPayload, generateAiProjectPlan, getToolIO } from "../src/project-foundation.js";
+import { runTool } from "../src/tool-engines.js";
 import { buildDirectAnswerFoundation } from "../src/direct-answer-engine.js";
 
 const blockedAnswerPatterns = [
@@ -11,6 +12,7 @@ const blockedAnswerPatterns = [
   /completed cells/i,
   /current in-house tools wired/i,
   /free tools are better/i,
+  /free tools save time/i,
   /skeleton tool:/i
 ];
 
@@ -42,9 +44,57 @@ const cases = [
     expectsFile: true
   },
   {
-    name: "generic fallback stays human-readable",
+    name: "follow-up process routes to content answer",
     prompt: "build a customer follow up process for a small lawn care company",
-    required: [/Direct Answer/i, /practical first-pass answer/i, /Next Action/i]
+    required: [/Direct Answer/i, /content pack/i, /Email Draft/i, /Quality Checks/i]
+  },
+  {
+    name: "content marketing pack",
+    prompt: "write a friendly email and social post for a weekend candle sale using small batch and Saturday pickup",
+    required: [/Email Draft/i, /Subject:/i, /social post/i, /CTA|Call to action/i]
+  },
+  {
+    name: "data cleanup workflow",
+    prompt: "clean a CSV table columns are date, vendor, category, amount, notes remove duplicates and flag missing amounts",
+    required: [/Output Table/i, /date \| vendor \| category \| amount/i, /Duplicates removed/i, /Rows needing review/i]
+  },
+  {
+    name: "operations checklist",
+    prompt: "build a checklist and schedule for moving out by August 1 with weekends only and a 500 dollar budget",
+    required: [/Working Schedule/i, /Checklist/i, /Owner/i, /Risk Controls/i]
+  },
+  {
+    name: "loan calculator",
+    prompt: "calculate loan payment for 250000 at 6.5 percent for 30 years",
+    required: [/\$250,000 loan/i, /estimated payment/i, /monthly payment/i, /Estimated interest/i]
+  },
+  {
+    name: "garden spacing",
+    prompt: "how many tomato plants fit in a 4 by 8 foot garden bed at 18 inch spacing",
+    required: [/4 ft x 8 ft bed/i, /18 in spacing/i, /plants/i, /simple grid/i]
+  },
+  {
+    name: "developer url encoder",
+    prompt: "url encode \"hello world & prices\"",
+    required: [/URL encoded value/i, /hello%20world%20%26%20prices/i]
+  },
+  {
+    name: "media design plan",
+    prompt: "create an RGB motion logo visualizer with neon cyan and magenta and export as MP4",
+    required: [/Creative Brief/i, /Production Settings/i, /MP4/i, /Quality Checks/i]
+  },
+  {
+    name: "research verification",
+    prompt: "verify this quote and provide source evidence and citation notes",
+    required: [/Evidence Table/i, /Verification Rules/i, /confirmed facts/i, /recommendation/i]
+  },
+  {
+    name: "fallback filters stale default artifacts",
+    prompt: "organize a small workshop supply list into a practical next action plan",
+    required: [/Direct Answer/i, /Working Schedule/i, /Checklist/i, /Risk Controls/i],
+    extraArtifacts: [
+      { status: "ok", toolName: "Seed Text Tool", output: "Free tools save time when they can share project data.", outputType: "text" }
+    ]
   }
 ];
 
@@ -63,14 +113,38 @@ function auditWorkflowPlanning(prompt, name) {
   return { plan, queue };
 }
 
+const toolsById = new Map(tools.map((tool) => [tool.id, tool]));
+
+function auditWorkflowExecution(queue, prompt, name) {
+  let payload = prompt;
+  let payloadType = "text";
+  const outputs = [];
+  for (const task of queue.slice(0, 16)) {
+    const tool = toolsById.get(task.toolId);
+    assert.ok(tool, `${name} task ${task.sequence} should resolve tool ${task.toolId}`);
+    const inputs = buildInputsFromPayload(tool, payload, payloadType);
+    const output = String(runTool(tool, inputs) ?? "");
+    assert.ok(output.trim().length > 0, `${name} task ${task.sequence} ${tool.name} should produce output`);
+    assert.doesNotMatch(output, /Input issue:/i, `${name} task ${task.sequence} ${tool.name} should not produce input issue output`);
+    outputs.push({ tool: tool.name, output });
+    payload = output;
+    payloadType = getToolIO(tool).output || "text";
+  }
+  return outputs;
+}
+
 const report = [];
 
 for (const testCase of cases) {
   const { plan, queue } = auditWorkflowPlanning(testCase.prompt, testCase.name);
+  const toolOutputs = auditWorkflowExecution(queue, testCase.prompt, testCase.name);
   const answer = buildDirectAnswerFoundation({
     prompt: testCase.prompt,
     finalPayload: "free tools are better to share",
-    artifacts: []
+    artifacts: [
+      ...toolOutputs.map((item) => ({ status: "ok", toolName: item.tool, output: item.output, outputType: "text" })),
+      ...(testCase.extraArtifacts || [])
+    ]
   });
   assert.ok(answer?.content, `${testCase.name} should return answer content`);
   assertNoInternalSyntax(answer.content, testCase.name);
@@ -85,6 +159,7 @@ for (const testCase of cases) {
     mode: answer.mode,
     workflowSteps: plan.steps.length,
     queuedTasks: queue.length,
+    executedTasks: toolOutputs.length,
     answerWords: answer.content.split(/\s+/).filter(Boolean).length,
     preview: answer.content.split("\n").slice(0, 5).join(" ")
   });
@@ -92,5 +167,5 @@ for (const testCase of cases) {
 
 console.log("Cockpit direct-answer audit passed.");
 for (const item of report) {
-  console.log(`- ${item.name}: ${item.mode}, ${item.workflowSteps} planned steps, ${item.queuedTasks} queued tasks, ${item.answerWords} words`);
+  console.log(`- ${item.name}: ${item.mode}, ${item.workflowSteps} planned steps, ${item.queuedTasks} queued tasks, ${item.executedTasks} executed, ${item.answerWords} words`);
 }
